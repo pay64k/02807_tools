@@ -1,0 +1,33 @@
+1. first convert upper case character to lower case
+	tr "[:upper:]" "[:lower:]" < shakespeare > shakespeare_lower
+
+2. do the same with dict
+	tr "[:upper:]" "[:lower:]" < dict > dict_lower
+
+3. sort the dictionary
+	sort dict_lower > dict_lower_sorted
+
+4. just like in ex1 prepare the shakespeare by making it a dictionary
+	tr -c '[:alnum:]' '[\n*]' < shakespeare_lower | tr -s '[\n]' | sort | uniq > shakespeare_dict
+
+5. use comm command to compare two files
+	comm -12 dict_lower_sorted shakespeare_dict | wc -l
+
+	explanation:
+	1) comm compare two files line by line
+	2) -12 option supresses column 1 and 2 and only shows word that are the same for both lines
+	3) wc -l counts the number of lines (that is the similar words)
+
+	the result of the command is: 2449 (correct words, common for dict and shakespeare_dict)
+
+6. there is probably a better way, but i used editor to delete the first line of the shakespeare_dict which was just a new line character
+
+6. now count the words in created shakespeare_dict
+	wc -l shakespeare_dict 
+
+	which results in: 3170
+
+7. now if the amount of common words (that is word that are in the dict - correct words) is substracted from all word in shakespeare_dict we get the misspelled words (those that are not
+   in a dictionary):
+
+	3170 - 2449 = 721 misspelled words

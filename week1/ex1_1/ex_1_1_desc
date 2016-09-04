@@ -2,9 +2,9 @@
 	man man > man.txt
 
 2. then convert all upper case letters to lower case:
-	 tr "[:upper:]" "[:lower:]" < man.txt > man_lower.txt
+	 tr "[:upper:]" "[:lower:]" < man > man_lower
 
-	note about tr:	tr maps characters from one set to another set, try running
+	note about tr:	tr maps characters from one set to another set;
 			try running a command:
 					tr 'abcd' 'efgh'
 			and typing words from set1 ('abcd'), confirm with enter and see the results. all characters are mapped to the accoring ones from set2
