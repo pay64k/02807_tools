@@ -1,0 +1,40 @@
+1. first create the sample file using
+	man man > man.txt
+
+2. then convert all upper case letters to lower case:
+	 tr "[:upper:]" "[:lower:]" < man.txt > man_lower.txt
+
+	note about tr:	tr maps characters from one set to another set, try running
+			try running a command:
+					tr 'abcd' 'efgh'
+			and typing words from set1 ('abcd'), confirm with enter and see the results. all characters are mapped to the accoring ones from set2
+
+3. then execute the command:
+	tr -c '[:alnum:]' '[\n*]' < man_lower | tr -s '[\n]' | sort | uniq -c | sort -nr | head -10
+
+	exmpalantion:
+	1)  tr -c '[:alnum:]' '[\n*]'
+		take all words and numbers (or basically strings of letters and numbers) and compliment them witn a new line (the '*' character in set2 makes the tr to copy all characters
+		in a string - it copies its length)
+	2) < man_lower 
+		inputs the file man_lower to the tr command
+	3) '|' are the pipe characters in bash that will 'forward' the outputs of a command to the command right of the pipe sign
+	4) then use the option -s to squeeze all new lines so that they will not be counted as a word
+	5) sort command will sort all the word alphabetically - each word will be in a separate line
+	6) uniq command will filter all the repeated lines. by adding option -c it will add the number of occurences before each word in the output
+	7) sort -nr command will first sort the lines by the number, then it will reverse the whole output so that the highest number will be on top
+	8) finally head -10 command will show the top 10 lines of the input. 10 lines are shown by default - the number of lines to show can be changed with -num (in that case 10) optio
+
+3. the output of counting 10 most popular words in a file (man) is then:
+
+    270 the
+    162 to
+    114 is
+    114 a
+     85 man
+     81 manual
+     77 of
+     77 and
+     65 if
+     65 be
+ 
