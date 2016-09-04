@@ -1,0 +1,11 @@
+in order to filter out a lines where a car costs more then 1000 the awk command was used
+
+awk '$5 > 10000' cars_ORG 
+
+it will take the fifth column and compare it to 10000 and then output the matching lines to the standard output (terminal)
+
+the output will look like:
+
+	ford    mustang 65      45      17000
+	ford    ltd     83      15      10500
+	ford    thundbd 84      10      17000
