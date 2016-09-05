@@ -1,0 +1,183 @@
+create new repo at github 
+
+create repo locally:
+
+show console log
+
+root:Documents# mkdir t2_git_example
+root:Documents# cd t2_git_example/
+root:t2_git_example# git init
+Initialized empty Git repository in /home/jacob1/Documents/t2_git_example/.git/
+root:t2_git_example# touch test_file1
+root:t2_git_example# ls
+test_file1
+root:t2_git_example# git status
+On branch master
+
+Initial commit
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+	test_file1
+
+nothing added to commit but untracked files present (use "git add" to track)
+root:t2_git_example# git add test_file1 
+root:t2_git_example# git status
+On branch master
+
+Initial commit
+
+Changes to be committed:
+  (use "git rm --cached <file>..." to unstage)
+
+	new file:   test_file1
+
+root:t2_git_example# git commit -m "added a test_file"
+[master (root-commit) 82b51e9] added a test_file
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 test_file1
+root:t2_git_example# git push
+fatal: No configured push destination.
+Either specify the URL from the command-line or configure a remote repository using
+
+    git remote add <name> <url>
+
+and then push using the remote name
+
+    git push <name>
+
+root:t2_git_example# ^C
+root:t2_git_example# git remote add origin pay64k@github.com:pay64k/t2_example.git
+root:t2_git_example# git push
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin master
+
+root:t2_git_example# git push -u origin master
+The authenticity of host 'github.com (192.30.253.112)' can't be established.
+RSA key fingerprint is SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8.
+Are you sure you want to continue connecting (yes/no)? yes 
+Warning: Permanently added 'github.com,192.30.253.112' (RSA) to the list of known hosts.
+Permission denied (publickey).
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+
+
+-----
+
+root:t2_git_example# git init
+Initialized empty Git repository in /home/jacob1/Documents/t2_git_example/.git/
+root:t2_git_example# git add test_file1 
+root:t2_git_example# git commit -m "test file added"
+[master (root-commit) 8b1fc12] test file added
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 test_file1
+root:t2_git_example# git remote add origin https://github.com/pay64k/t2_example.git
+root:t2_git_example# git push -u origin master
+Username for 'https://github.com': pay64k
+Password for 'https://pay64k@github.com': 
+Counting objects: 3, done.
+Writing objects: 100% (3/3), 208 bytes | 0 bytes/s, done.
+Total 3 (delta 0), reused 0 (delta 0)
+To https://github.com/pay64k/t2_example.git
+ * [new branch]      master -> master
+Branch master set up to track remote branch master from origin.
+root:t2_git_example# git push
+Username for 'https://github.com': ^C
+root:t2_git_example# git config --global credential.helper cache
+root:t2_git_example# git config credential.helper
+cache
+root:t2_git_example# git config --global credential.helper cache
+root:t2_git_example# git push
+Username for 'https://github.com': pay64k
+Password for 'https://pay64k@github.com': 
+Everything up-to-date
+root:t2_git_example# git push
+Everything up-to-date
+
+-----
+
+log into the instance
+
+root@ip-172-31-20-69:/home/ubuntu# mkdir Documents
+root@ip-172-31-20-69:/home/ubuntu# cd Documents/
+root@ip-172-31-20-69:/home/ubuntu/Documents# mkdir t2_example_git
+root@ip-172-31-20-69:/home/ubuntu/Documents# cd t2_example_git/
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git# git clone https://github.com/pay64k/t2_example
+Cloning into 't2_example'...
+remote: Counting objects: 3, done.
+remote: Total 3 (delta 0), reused 3 (delta 0), pack-reused 0
+Unpacking objects: 100% (3/3), done.
+Checking connectivity... done.
+
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git# cd t2_example/
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git/t2_example# git config user.name instance_aws
+
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git/t2_example# touch test_file_aws
+
+
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git/t2_example# git add test_file_aws 
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git/t2_example# git status
+On branch master
+Your branch is up-to-date with 'origin/master'.
+
+Changes to be committed:
+  (use "git reset HEAD <file>..." to unstage)
+
+	new file:   test_file_aws
+
+
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git/t2_example# git commit -m "commit from aws"
+[master a3e9744] commit from aws
+ Committer: instance_aws <root@ip-172-31-20-69.us-west-2.compute.internal>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly:
+
+    git config --global user.name "Your Name"
+    git config --global user.email you@example.com
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+ create mode 100644 test_file_aws
+
+root@ip-172-31-20-69:/home/ubuntu/Documents/t2_example_git/t2_example# git push
+warning: push.default is unset; its implicit value is changing in
+Git 2.0 from 'matching' to 'simple'. To squelch this message
+and maintain the current behavior after the default changes, use:
+
+  git config --global push.default matching
+
+To squelch this message and adopt the new behavior now, use:
+
+  git config --global push.default simple
+
+When push.default is set to 'matching', git will push local branches
+to the remote branches that already exist with the same name.
+
+In Git 2.0, Git will default to the more conservative 'simple'
+behavior, which only pushes the current branch to the corresponding
+remote branch that 'git pull' uses to update the current branch.
+
+See 'git help config' and search for 'push.default' for further information.
+(the 'simple' mode was introduced in Git 1.7.11. Use the similar mode
+'current' instead of 'simple' if you sometimes use older versions of Git)
+
+Username for 'https://github.com': pay64k
+Password for 'https://pay64k@github.com': 
+Counting objects: 3, done.
+Compressing objects: 100% (2/2), done.
+Writing objects: 100% (2/2), 266 bytes | 0 bytes/s, done.
+Total 2 (delta 0), reused 0 (delta 0)
+To https://github.com/pay64k/t2_example
+   8b1fc12..a3e9744  master -> master
+
+
+

@@ -1,0 +1,72 @@
+show screen of the console
+
+show screen of eneabling port 80 to test the server connection
+
+connect using:
+
+ssh -i example-t2-keys.pem ubuntu@ec2-52-38-177-196.us-west-2.compute.amazonaws.com
+
+
+welcome screen shows up:
+
+root:ex1_4# ssh -i example-t2-keys.pem ubuntu@ec2-52-38-177-196.us-west-2.compute.amazonaws.com
+The authenticity of host 'ec2-52-38-177-196.us-west-2.compute.amazonaws.com (52.38.177.196)' can't be established.
+ECDSA key fingerprint is SHA256:+2RI0MUE0MObCNuVH6vVUP0l4CoVwIWOM1KGfqs0Mrk.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'ec2-52-38-177-196.us-west-2.compute.amazonaws.com,52.38.177.196' (ECDSA) to the list of known hosts.
+Welcome to Ubuntu 14.04.4 LTS (GNU/Linux 3.13.0-92-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com/
+
+  System information as of Mon Sep  5 12:25:00 UTC 2016
+
+  System load: 0.64              Memory usage: 5%   Processes:       82
+  Usage of /:  10.0% of 7.74GB   Swap usage:   0%   Users logged in: 0
+
+  Graph this data and manage this system at:
+    https://landscape.canonical.com/
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+0 packages can be updated.
+0 updates are security updates.
+
+
+
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+------------
+change to root using sudo -i
+
+installed git
+
+followed the guide at:
+https://www.digitalocean.com/community/tutorials/how-to-install-linux-apache-mysql-php-lamp-stack-on-ubuntu-14-04
+
+installed apache2
+	apt-get update
+	apt-get install apache2
+
+now the http server is running at my public ip 52.38.177.196:
+
+screen of the thing
+
+
+then the php has bee installed
+
+accessed via:
+http://52.38.177.196/info.php
+
+screen php
+
+
+
+
+
+
