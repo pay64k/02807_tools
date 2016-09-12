@@ -1,0 +1,2 @@
+bla = "kaka"
+print bla

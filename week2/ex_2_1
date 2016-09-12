@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+
+bla = 123
+
+dupa = "dupa dupa dupa"
+
+print bla
+print dupa
+
