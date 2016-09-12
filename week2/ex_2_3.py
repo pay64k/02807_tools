@@ -1,8 +1,10 @@
 import json
 import re
 import nltk
+import numpy as np
 
 from nltk.corpus import stopwords
+from sklearn.feature_extraction.text import CountVectorizer
 
 # nltk.download() #must do once; download stopwords
 # print stopwords.words("english")
@@ -31,4 +33,12 @@ meaningful_words = [w for w in word_dict if not w in stops]
 # print meaningful_words
 # print data_clean[0:1]
 
+vectorizer = CountVectorizer(analyzer = "word",   \
+                             tokenizer = None,    \
+                             preprocessor = None, \
+                             stop_words = None,   \
+                             max_features = 5000)
 
+train_data_features = vectorizer.fit_transform(data_clean)
+train_data_features = train_data_features.toarray()
+print train_data_features.shape
