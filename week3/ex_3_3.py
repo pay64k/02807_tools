@@ -1,12 +1,10 @@
 import numpy as np
 from numpy.random import randn
 import pandas as pd
-from pandas import Series, DataFrame, Index
+from pandas import Series, DataFrame, Index, pivot_table
 from collections import defaultdict
 import operator
 import matplotlib.pyplot as plt
-
-# 3083::All About My Mother (Todo Sobre Mi Madre) (1999)::Comedy|Drama line has been removed
 
 movies_table = pd.read_table('ml-1m/movies.dat',
                              engine='python',
@@ -50,7 +48,23 @@ over250_df.columns = ['title','is_active']
 
 active_titles = over250_df[over250_df.is_active == True]
 
-print active_titles
+active_titles = active_titles.merge(movies_data)
+
+# print active_titles
+
+#The 3 movies with the highest average rating for females. Do the same for males.
+
+# top3 = active_titles.groupby(['gender','title'])
+#
+# top3 = top3.mean()
+# top3 = top3.sort_values(by = 'rating', ascending = False)
+#
+# test = pivot_table(active_titles, values='rating', index=['title', 'gender'], aggfunc=np.mean)
+#
+#
+# top3 = active_titles.groupby(['gender','title'],as_index = False)['rating'].mean()
 
 
-
+top3 = active_titles.groupby(['gender','title'],as_index = False)['rating'].mean()
+print top3[top3.gender == 'F'].sort_values(by = 'rating',ascending = False)[:3]
+print top3[top3.gender == 'M'].sort_values(by = 'rating',ascending = False)[:3]
