@@ -87,4 +87,5 @@ diff_df_females_sorted = diff_df_females.sort_values(by='diff',ascending = False
 print only_males.ix[diff_df_females_sorted.index[:10]]
 
 # ------- Point 2.3 -------
-active_titles.groupby(by='title',as_index=False).mean()
+top5_std = active_titles.groupby(by=['title'])['rating'].std().sort_values(ascending=False)[:5]
+print top5_std
