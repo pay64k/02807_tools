@@ -47,7 +47,7 @@ req_received_pizza = []
 for line in data:
     req_received_pizza.append(line['requester_received_pizza'])
 # -------
-train_data_features = vectorizer.fit_transform(data_clean_train,req_received_pizza)
+train_data_features = vectorizer.fit_transform(data_clean_train)
 
 train_data_features_array = train_data_features.toarray()
 print train_data_features_array.shape
