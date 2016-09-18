@@ -1,4 +1,4 @@
-def f(rep):
+def f(int rep):
 	cdef int i, l
 	cdef float summ
 	i = 0
