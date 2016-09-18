@@ -17,10 +17,18 @@ def f_py(rep):
     return summ
 
 old_time = datetime.datetime.now()
-print "result: ", (f_py(500))
+print "result for py: ", (f_py(500))
 print "time delta for py: ", datetime.datetime.now() - old_time
 
 import e
 old_time_cy = datetime.datetime.now()
-e.f(500)
+print "result for cy: ", e.f(500)
 print "time delta for cy:", datetime.datetime.now() - old_time_cy
+
+# no types decalred:
+# time delta for py:  0:00:05.696566
+# time delta for cy: 0:00:03.277645
+
+# with types declared:
+# time delta for py:  0:00:00.661372
+# time delta for cy: 0:00:00.024943
