@@ -17,32 +17,49 @@ def dist(set_1,set_2):
     return 1 - intersection / float(union)
 
 
-def regionQuery(data,one_point_data,epsilon):
+def regionQuery(data,one_point_data):
     neighbourhood = []
+
     for index in data:
-        point_to_compare = point_info[index]['point_data']
-        if dist(point_to_compare,one_point_data) <= epsilon:
+        point_to_compare = points_info[index]['point_data']
+
+        if dist(point_to_compare,one_point_data) <= eps:
             neighbourhood.append(index)
+
     return neighbourhood
 
-def expandCluster():
-    0
+
+def expandCluster(point_info,neighborPts):
+
+    neighborPts_visited_indices = []
+
+    for index in neighborPts:
+
+        if index not in neighborPts_visited_indices:
+            neighborPts_visited_indices.append(index)
+            neighborPts_prime = regionQuery(neighborPts,point_info)
+
+            if len(neighborPts_prime) >= minPts:
+                neighborPts = neighborPts + neighborPts_prime
+
+        if points_info[index]['cluster'] == 'NaN':
+            points_info[index]['cluster'] = current_cluster_index
 
 # -------- Prepare lookup point dictionary --------
-point_info = dict()
+points_info = dict()
 
 for ind, matrix_entry in enumerate(dense_matrix):
-    point_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
+    points_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
 print "-------- All points info: --------"
-for point in point_info:
-    print point_info[point]
+for point in points_info:
+    print points_info[point]
 print "-------- --------------- --------"
 
 # -------- GLOBAL variables --------
 visited_indices = []
 noise_indices = []
 clusters = []
-cluster_index = 0
+current_cluster_index = 0
 
 # -------- DBSCAN parameters --------
 minPts = 2
@@ -50,17 +67,26 @@ eps = 0.4
 
 # -------- DBSCAN main --------
 
-for point_index in point_info:
+for point_index in points_info:
     if point_index in visited_indices:
         continue
 
-        visited_indices.append(point_index)
+    visited_indices.append(point_index)
 
-    neighborPts = regionQuery(range(0,len(point_info)),point_info[point_index]['point_data'],eps)
+    neighborPts = regionQuery(range(0,len(points_info)),points_info[point_index]['point_data'])
+
     if len(neighborPts) < minPts:
         noise_indices.append(point_index)
     else:
-        cluster_index += 1
-        # expandCluster()
+        current_cluster_index += 1
+        points_info[point_index]['cluster'] = current_cluster_index
+        expandCluster(points_info[point_index]['point_data'],neighborPts)
 
+print "-------- All noise indices: --------"
 print noise_indices
+
+
+print "-------- All points info: --------"
+for point in points_info:
+    print points_info[point]
+print "-------- --------------- --------"
