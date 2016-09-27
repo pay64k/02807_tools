@@ -1,9 +1,9 @@
 import cPickle as pickle
 import scipy.sparse as ss
 from scipy import *
-import distance
 
-filename = "data_100points_100dims.dat"
+
+filename = "data_10points_10dims.dat"
 
 spr_matrix = pickle.load(open(filename, 'r'))
 dense_matrix = ss.csr_matrix(spr_matrix).toarray()
@@ -20,72 +20,80 @@ def region_query(data, point, eps):
     neighborhood = dict()
     # print "DATA: ", data
     for index in data:
-        if dist(data[index]['point_data'],point['point_data']) <= eps:
+        if dist(point['point_data'],data[index]['point_data']) <= eps:
             # neighborhood.append([point['point_index'], data[index]])
-            neighborhood[index]=data[index]
-    # print "neighborhood: " , neighborhood
+            neighborhood[index]=dict(data[index])
+    # print "point: ", point['point_index'] ," neighborhood: " , neighborhood
     return neighborhood
-    # for index,data_point in enumerate(data):
-    #     if dist(data_point,point) <= eps:
-    #         neighborhood.append([index,point])
-    # # print "region_query for point index: ", point, neighborhood
-    # return neighborhood
 
 
-def expand_cluster(point__, neighPts, cluster_index, _eps, _minPt):
 
-    local_points_info = dict()
+def expand_cluster(point__, _neighPts, cluster_index, _eps, _minPt):
+
+
     point_info[point__['point_index']]['cluster'] = cluster_index
 
     # print "neighPts: ", neighPts
-
+    neighPts = dict(_neighPts)
     for point_index in neighPts:
-        # bla = neighPts[point_index]
         neighPts[point_index]['is_visited'] = False
+        print "tuu" , neighPts[point_index]
 
-    for neigh_point in neighPts:
-
+    for neigh_point in neighPts.keys():
+        # print "LENNNN: ", len(neighPts)
         if neighPts[neigh_point]['is_visited']:
             continue
 
         neighPts[neigh_point]['is_visited'] = True
-
+        print neighPts[neigh_point]
+        # print point_info[neighPts[neigh_point]['point_index']]['is_visited']
         temp_points_data=[]
         # for i,point_ in neighPts:
         #     temp_points_data.append(point_['point_data'])
 
-        local_neighPts = region_query(neighPts,neighPts[neigh_point],_eps)
+        local_neighPts = dict(region_query(neighPts,neighPts[neigh_point],_eps))
+        # print "neighPts: ", neighPts
         # print "local_neighPts: ", local_neighPts
+
         # print "len(local_neighPts): ", len(local_neighPts)
         if len(local_neighPts) >= _minPt:
-            neighPts.update(local_neighPts)
+            # neighPts.update(local_neighPts)
+            for ind in local_neighPts:
+                neighPts[rand()] = local_neighPts[ind]
+        # print "neighPts(updated): ", neighPts
 
-        if neighPts[neigh_point]['cluster'] == 0:
+        if neighPts[neigh_point]['cluster'] == "NaN":
 
             point_info[ neighPts[neigh_point]['point_index'] ]['cluster'] = cluster_index
 
 point_info = dict()
 minPts = 2
-eps = 0.3
+eps = 0.4
 cluster_number = 0
 
 for ind, matrix_entry in enumerate(dense_matrix):
     if ind not in point_info:
         # set point info:
-        point_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'is_visited': False, 'is_noise': False, 'cluster': 0}
+        point_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'is_visited': False, 'is_noise': False, 'cluster': "NaN"}
+
 
 for index in point_info:
+    print point_info[index]
 
     # if index not in point_info:
     #     # set point info:
     #     point_info[index] = {'point_index': index, 'point_data': point, 'is_visited': False, 'is_noise': False, 'cluster': 0}
 
+    print "point nr " , point_info[index]['point_index']," is visited ", point_info[index]['is_visited']
+
     if point_info[index]['is_visited']:
+        print "continue",index
         continue
 
     point_info[index]['is_visited'] = True
     # neighborPts = region_query(dense_matrix, point_info[index], eps)
-    neighborPts = region_query(point_info, point_info[index], eps)
+    print "current point:", point_info[index]['point_index']
+    neighborPts = dict(region_query(point_info, point_info[index], eps))
     # print "point index: ", index,"neighbours: ", neighborPts
 
     if len(neighborPts) < minPts:
@@ -98,7 +106,7 @@ for index in point_info:
 distinct_clusters = set()
 
 for bla in point_info:
-    # print bla,point_info[bla]
+    print bla,point_info[bla]
     distinct_clusters.add(point_info[bla]['cluster'])
 
 # print point_info
