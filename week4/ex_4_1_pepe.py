@@ -1,25 +1,39 @@
 import cPickle as pickle
 import scipy.sparse as ss
-from matplotlib._path import point_in_path
 from scipy import *
-import numpy as np
+from datetime import datetime
 
+# -------- GLOBAL variables --------
+visited_indices = []
+noise_indices = []
+clusters = dict()
+current_cluster_index = 0
+added_to_any_cluster = []
+points_info = dict()
+# -------- --------------- --------
 
-filename = "data_1000points_1000dims.dat"
+def clean_variables():
+    global visited_indices
+    global noise_indices
+    global clusters
+    global current_cluster_index
+    global added_to_any_cluster
+    global points_info
+    visited_indices = []
 
-spr_matrix = pickle.load(open(filename, 'r'))
-dense_matrix = ss.csr_matrix(spr_matrix).toarray()
-
+    noise_indices = []
+    clusters = dict()
+    current_cluster_index = 0
+    added_to_any_cluster = []
+    points_info = dict()
 
 def dist(set_1,set_2):
     intersection = (set_1 & set_2).tolist().count(1)
     union = (set_1 | set_2).tolist().count(1)
-    # print "set_1 " , set_1
-    # print "set_2 " , set_2
-    # print "union" , union
     return 1 - intersection / float(union)
 
 # -------- --------------- --------
+
 
 def regionQuery(one_point_data):
     neighbourhood = []
@@ -34,9 +48,8 @@ def regionQuery(one_point_data):
 
 # -------- --------------- --------
 
-def expandCluster(point_info,neighborPts):
 
-    # neighborPts_visited_indices = []
+def expandCluster(point_info,neighborPts):
 
     for index in neighborPts:
 
@@ -46,61 +59,135 @@ def expandCluster(point_info,neighborPts):
 
             if len(neighborPts_prime) >= minPts:
                 neighborPts += neighborPts_prime
-                # neighborPts = list(set(neighborPts).intersection(neighborPts_prime))
+
         if index not in added_to_any_cluster:
             clusters[current_cluster_index].append(index)
             added_to_any_cluster.append(index)
 
-        # if points_info[index]['cluster'] == 'NaN':
-        #     points_info[index]['cluster'] = current_cluster_index
-
-# -------- Prepare lookup point dictionary --------
-points_info = dict()
-
-for ind, matrix_entry in enumerate(dense_matrix):
-    points_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
-# print "-------- All points info: --------"
-# for point in points_info:
-#     print points_info[point]
-# print "-------- --------------- --------"
-
-# -------- GLOBAL variables --------
-visited_indices = []
-noise_indices = []
-clusters = dict()
-current_cluster_index = 0
-added_to_any_cluster = []
 
 # -------- DBSCAN parameters --------
 minPts = 2
-eps = 0.15
+eps = 0.3
 
 # -------- DBSCAN main --------
 
-for point_index in points_info:
-    if point_index in visited_indices:
-        continue
 
-    visited_indices.append(point_index) # mark P as visited
+def dbscan(filename,_eps):
+    global eps
+    eps = _eps
+    global current_cluster_index
 
-    neighborPts = regionQuery(points_info[point_index]['point_data']) # NeighborPts = regionQuery(P, eps)
+    spr_matrix = pickle.load(open(filename, 'r'))
+    dense_matrix = ss.csr_matrix(spr_matrix).toarray()
 
-    if len(neighborPts) < minPts: # if sizeof(NeighborPts) < MinPts
-        noise_indices.append(point_index) # mark P as NOISE
-    else:
-        current_cluster_index += 1
-        clusters[current_cluster_index] = []
-        clusters[current_cluster_index].append(point_index)
-        added_to_any_cluster.append(point_index)
-        expandCluster(points_info[point_index]['point_data'],neighborPts)
+    # -------- Prepare lookup point dictionary --------
 
-# print "-------- All noise indices: --------"
-# print noise_indices
+    for ind, matrix_entry in enumerate(dense_matrix):
+        points_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
 
+    # -------- --------------- --------
 
-# print "-------- Updated points info: --------"
-# for point in points_info:
-#     print points_info[point]
-# print "-------- --------------- --------"
+    for point_index in points_info:
+        if point_index in visited_indices:
+            continue
 
-print len(clusters)
+        visited_indices.append(point_index) # mark P as visited
+
+        neighborPts = regionQuery(points_info[point_index]['point_data']) # NeighborPts = regionQuery(P, eps)
+
+        if len(neighborPts) < minPts: # if sizeof(NeighborPts) < MinPts
+            noise_indices.append(point_index)  # mark P as NOISE
+        else:
+            current_cluster_index += 1
+            clusters[current_cluster_index] = []
+            clusters[current_cluster_index].append(point_index)
+            added_to_any_cluster.append(point_index)
+            expandCluster(points_info[point_index]['point_data'],neighborPts)
+
+# -------- --------------- --------
+
+filename1 = "data_10points_10dims.dat"
+filename2 = "data_100points_100dims.dat"
+filename3 = "data_1000points_1000dims.dat"
+filename4 = "data_10000points_10000dims.dat"
+filename5 = "data_100000points_100000dims.dat"
+
+old_time = datetime.now()
+dbscan(filename1, 0.4)
+print filename1 , "-----------"
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    print "Amount of nodes in cluster nr.", cluster, ":", len(clusters[cluster])
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+print "Execution time: " , datetime.now() - old_time
+clean_variables()
+print "-----------"
+
+old_time = datetime.now()
+dbscan(filename2, 0.3)
+print filename2 , "-----------"
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    print "Amount of nodes in cluster nr.", cluster, ":", len(clusters[cluster])
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+print "Execution time: " , datetime.now() - old_time
+clean_variables()
+print "-----------"
+
+old_time = datetime.now()
+dbscan(filename3, 0.15)
+print filename3 , "-----------"
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    print "Amount of nodes in cluster nr.", cluster, ":", len(clusters[cluster])
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+print "Execution time: " , datetime.now() - old_time
+clean_variables()
+print "-----------"
+
+old_time = datetime.now()
+dbscan(filename4, 0.15)
+print filename4 , "-----------"
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    print "Amount of nodes in cluster nr.", cluster, ":", len(clusters[cluster])
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+print "Execution time: " , datetime.now() - old_time
+clean_variables()
+print "-----------"
+
+old_time = datetime.now()
+dbscan(filename5, 0.15)
+print filename5 , "-----------"
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    print "Amount of nodes in cluster nr.", cluster, ":", len(clusters[cluster])
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+print "Execution time: " , datetime.now() - old_time
+clean_variables()
+print "-----------"
