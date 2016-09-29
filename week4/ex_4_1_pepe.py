@@ -38,9 +38,14 @@ def org_dist(set_1,set_2):
     return 1 - intersection / float(union)
 
 
-def dist(set_1,set_2):
+def faster___dist(set_1,set_2):
     intersection = np.count_nonzero(np.logical_and(set_1,set_2))
     union = np.count_nonzero(np.logical_or(set_1,set_2))
+    return 1 - intersection / float(union)
+
+def dist(set_1,set_2):
+    intersection = len(set_1 & set_2)
+    union = len(set_1 | set_2)
     return 1 - intersection / float(union)
 
 # -------- --------------- --------
@@ -92,12 +97,15 @@ def dbscan(filename,_eps):
     global current_cluster_index
 
     spr_matrix = pickle.load(open(filename, 'r'))
-    dense_matrix = ss.csr_matrix(spr_matrix).toarray()
+    # dense_matrix = ss.csr_matrix(spr_matrix).toarray()
 
     # -------- Prepare lookup point dictionary --------
 
-    for ind, matrix_entry in enumerate(dense_matrix):
-        points_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
+    # for ind, matrix_entry in enumerate(dense_matrix):
+    #     points_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
+
+    for ind, matrix_entry in enumerate(spr_matrix):
+        points_info[ind] = {'point_index': ind, 'point_data': set(spr_matrix[ind].indices), 'cluster': "NaN"}
 
     # -------- --------------- --------
     for point_index in points_info:
@@ -145,62 +153,62 @@ print "Amount of nodes in the biggest cluster: ", max_nodes
 clean_variables()
 print "-----------"
 #
-# old_time = datetime.now()
-# dbscan(filename2, 0.3)
-# print filename2 , "-----------"
-# print "Execution time: " , datetime.now() - old_time
-# print "Amount of different clusters: ", len(clusters)
-# max_nodes = 0
-# for cluster in clusters:
-#     cur_max = len(clusters[cluster])
-#     if cur_max > max_nodes:
-#         max_nodes = cur_max
-# print "Amount of noise nodes: " , len(noise_indices)
-# print "Amount of nodes in the biggest cluster: ", max_nodes
-# clean_variables()
-# print "-----------"
+old_time = datetime.now()
+dbscan(filename2, 0.3)
+print filename2 , "-----------"
+print "Execution time: " , datetime.now() - old_time
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+clean_variables()
+print "-----------"
 #
-# old_time = datetime.now()
-# dbscan(filename3, 0.15)
-# print filename3 , "-----------"
-# print "Execution time: " , datetime.now() - old_time
-# print "Amount of different clusters: ", len(clusters)
-# max_nodes = 0
-# for cluster in clusters:
-#     cur_max = len(clusters[cluster])
-#     if cur_max > max_nodes:
-#         max_nodes = cur_max
-# print "Amount of noise nodes: " , len(noise_indices)
-# print "Amount of nodes in the biggest cluster: ", max_nodes
-# clean_variables()
-# print "-----------"
+old_time = datetime.now()
+dbscan(filename3, 0.15)
+print filename3 , "-----------"
+print "Execution time: " , datetime.now() - old_time
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+clean_variables()
+print "-----------"
 #
-# old_time = datetime.now()
-# dbscan(filename4, 0.15)
-# print filename4 , "-----------"
-# print "Execution time: " , datetime.now() - old_time
-# print "Amount of different clusters: ", len(clusters)
-# max_nodes = 0
-# for cluster in clusters:
-#     cur_max = len(clusters[cluster])
-#     if cur_max > max_nodes:
-#         max_nodes = cur_max
-# print "Amount of noise nodes: " , len(noise_indices)
-# print "Amount of nodes in the biggest cluster: ", max_nodes
-# clean_variables()
-# print "-----------"
+old_time = datetime.now()
+dbscan(filename4, 0.15)
+print filename4 , "-----------"
+print "Execution time: " , datetime.now() - old_time
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+clean_variables()
+print "-----------"
 
-# old_time = datetime.now()
-# dbscan(filename5, 0.15)
-# print filename5 , "-----------"
-# print "Execution time: " , datetime.now() - old_time
-# print "Amount of different clusters: ", len(clusters)
-# max_nodes = 0
-# for cluster in clusters:
-#     cur_max = len(clusters[cluster])
-#     if cur_max > max_nodes:
-#         max_nodes = cur_max
-# print "Amount of noise nodes: " , len(noise_indices)
-# print "Amount of nodes in the biggest cluster: ", max_nodes
-# clean_variables()
-# print "-----------"
+old_time = datetime.now()
+dbscan(filename5, 0.15)
+print filename5 , "-----------"
+print "Execution time: " , datetime.now() - old_time
+print "Amount of different clusters: ", len(clusters)
+max_nodes = 0
+for cluster in clusters:
+    cur_max = len(clusters[cluster])
+    if cur_max > max_nodes:
+        max_nodes = cur_max
+print "Amount of noise nodes: " , len(noise_indices)
+print "Amount of nodes in the biggest cluster: ", max_nodes
+clean_variables()
+print "-----------"
