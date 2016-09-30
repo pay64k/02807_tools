@@ -5,11 +5,11 @@ from datetime import datetime
 import numpy as np
 
 # -------- GLOBAL variables --------
-visited_indices = []
-noise_indices = []
+visited_indices = set()
+noise_indices = set()
 clusters = dict()
 current_cluster_index = 0
-added_to_any_cluster = []
+added_to_any_cluster = set()
 points_info = dict()
 # -------- --------------- --------
 
@@ -22,26 +22,26 @@ def clean_variables():
     global added_to_any_cluster
     global points_info
 
-    visited_indices = []
-    noise_indices = []
+    visited_indices = set()
+    noise_indices = set()
     clusters = dict()
     current_cluster_index = 0
-    added_to_any_cluster = []
+    added_to_any_cluster = set()
     points_info = dict()
 
 # -------- --------------- --------
 
 
-def org_dist(set_1,set_2):
-    intersection = (set_1 & set_2).tolist().count(1)
-    union = (set_1 | set_2).tolist().count(1)
-    return 1 - intersection / float(union)
-
-
-def faster___dist(set_1,set_2):
-    intersection = np.count_nonzero(np.logical_and(set_1,set_2))
-    union = np.count_nonzero(np.logical_or(set_1,set_2))
-    return 1 - intersection / float(union)
+# def org_dist(set_1,set_2):
+#     intersection = (set_1 & set_2).tolist().count(1)
+#     union = (set_1 | set_2).tolist().count(1)
+#     return 1 - intersection / float(union)
+#
+#
+# def faster___dist(set_1,set_2):
+#     intersection = np.count_nonzero(np.logical_and(set_1,set_2))
+#     union = np.count_nonzero(np.logical_or(set_1,set_2))
+#     return 1 - intersection / float(union)
 
 def dist(set_1,set_2):
     intersection = len(set_1 & set_2)
@@ -50,20 +50,18 @@ def dist(set_1,set_2):
 
 # -------- --------------- --------
 
-
 def regionQuery(one_point_data):
-    neighbourhood = []
+    neighbourhood = set()
 
     for index in points_info:
         point_to_compare = points_info[index]['point_data']
 
         if dist(point_to_compare,one_point_data) <= eps:
-            neighbourhood.append(index)
+            neighbourhood.add(index)
 
     return neighbourhood
 
 # -------- --------------- --------
-
 
 def expandCluster(neighborPts):
 
@@ -71,17 +69,14 @@ def expandCluster(neighborPts):
         index = neighborPts.pop()
 
         if index not in visited_indices:
-            visited_indices.append(index)
+            visited_indices.add(index)
             neighborPts_prime = regionQuery(points_info[index]['point_data'])
 
             if len(neighborPts_prime) >= minPts:
-                set_neighborPts = set(neighborPts)
-                set_neighborPts_prime = set(neighborPts_prime)
-                set_diff = set_neighborPts_prime - set_neighborPts
-                neighborPts += list(set_diff)
+                neighborPts = neighborPts.union(neighborPts_prime)
         if index not in added_to_any_cluster:
             clusters[current_cluster_index].append(index)
-            added_to_any_cluster.append(index)
+            added_to_any_cluster.add(index)
 
 
 # -------- DBSCAN parameters --------
@@ -96,39 +91,34 @@ def dbscan(filename,_eps):
     eps = _eps
     global current_cluster_index
 
-    spr_matrix = pickle.load(open(filename, 'r'))
+    spr_matrix = pickle.load(open(filename, 'rb'))
     # dense_matrix = ss.csr_matrix(spr_matrix).toarray()
 
     # -------- Prepare lookup point dictionary --------
 
-    # for ind, matrix_entry in enumerate(dense_matrix):
-    #     points_info[ind] = {'point_index': ind, 'point_data': matrix_entry, 'cluster': "NaN"}
-
     for ind, matrix_entry in enumerate(spr_matrix):
-        points_info[ind] = {'point_index': ind, 'point_data': set(spr_matrix[ind].indices), 'cluster': "NaN"}
+        points_info[ind] = {'point_data': set(spr_matrix[ind].indices)}
 
     # -------- --------------- --------
     for point_index in points_info:
-        if point_index%1000==0:
-            print point_index
+        # if point_index%1000==0:
+        #     print point_index
         if point_index in visited_indices:
             continue
 
-        visited_indices.append(point_index)
+        visited_indices.add(point_index)
 
         neighborPts = regionQuery(points_info[point_index]['point_data'])
 
         if len(neighborPts) < minPts:
-            noise_indices.append(point_index)
+            noise_indices.add(point_index)
         else:
             current_cluster_index += 1
             clusters[current_cluster_index] = []
             clusters[current_cluster_index].append(point_index)
-            added_to_any_cluster.append(point_index)
+            added_to_any_cluster.add(point_index)
 
             expandCluster(neighborPts)
-
-
 
 # -------- --------------- --------
 
@@ -182,7 +172,7 @@ print "Amount of noise nodes: " , len(noise_indices)
 print "Amount of nodes in the biggest cluster: ", max_nodes
 clean_variables()
 print "-----------"
-#
+
 old_time = datetime.now()
 dbscan(filename4, 0.15)
 print filename4 , "-----------"
