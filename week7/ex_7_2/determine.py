@@ -3,7 +3,12 @@ from mrjob.job import MRJob
 class DetermineGraph(MRJob):
 
     def mapper(self, key, line):
-        print line
+        vertex = line.split()[0]
+        degree = int(line.split()[1])
+        if degree % 2 == 0:
+            yield "even", 1
+        else:
+            yield "odd", 1
 
 
     def reducer(self, key, values):
