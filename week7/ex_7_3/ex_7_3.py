@@ -5,7 +5,6 @@ import collections
 class CountTriangles(MRJob):
 
     def mapper(self, _, line):
-
         node_1, node_2 = line.split()
         yield int(node_1), int(node_2)
         yield int(node_2), int(node_1)
