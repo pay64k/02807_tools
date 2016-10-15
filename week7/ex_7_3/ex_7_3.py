@@ -1,6 +1,8 @@
 from mrjob.job import MRJob
 from mrjob.step import MRStep
+from datetime import datetime
 import collections
+
 
 class CountTriangles(MRJob):
 
@@ -10,29 +12,36 @@ class CountTriangles(MRJob):
         yield int(node_2), int(node_1)
 
     def reducer(self, key_node, connected_nodes):
-        # print "key", key
-        # for bla in values:
+        # print "key", key_node
+        # for bla in connected_nodes:
         #     print bla
         # print "------+"
         # values_copy = reduce(lambda x, y: x + [y], values, [])
         connected_nodes_copy = list(connected_nodes)
         for node in connected_nodes_copy:
+            # print sorted([key_node,node]), connected_nodes_copy
             yield sorted([key_node,node]), connected_nodes_copy
 
     def reducer_2(self, key, values):
+
         # print "key",key
         # bla = list(values)
         # print bla
-        # yield key,
+
         list_of_nodes_sets = []
         for node_list in values:
             list_of_nodes_sets.append(set(node_list))
-        # print list_of_nodes_sets
+            # if key == [126,127]: print node_list
+        # print "key",key, list_of_nodes_sets
         intersec = set.intersection(*list_of_nodes_sets)
-        # print intersec
+
+        # if len(intersec)>1:
+        #     print intersec;
+        #     print key
         # print "----"
         # print "bla",list(intersec)
-        yield key,list(intersec)
+        # print "key", key, "intersection",list(intersec)
+        yield key, list(intersec)
 
 
 
@@ -61,7 +70,7 @@ class CountTriangles(MRJob):
                 triangle += key
                 triangle += [node]
                 triangle = sorted(triangle)
-                # print "key", key, "triangle",triangle , "node", node
+                # print "key", key, "triangle",triangle, "neighbour_nodes", neighbour_nodes
                 yield triangle, 1
 
 
@@ -99,4 +108,6 @@ class CountTriangles(MRJob):
         ]
 
 if __name__ == '__main__':
+    old_time = datetime.now()
     CountTriangles.run()
+    print "run time:", datetime.now() - old_time
