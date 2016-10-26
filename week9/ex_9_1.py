@@ -29,6 +29,7 @@ for file in data_raw:
 
 print len(data_raw_filtered)
 # print "data_raw_filtered",data_raw_filtered[0]
+# bla
 
 # ------------------ create bag of words -----------------
 
