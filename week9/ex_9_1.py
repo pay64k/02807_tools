@@ -7,6 +7,7 @@ from sklearn import linear_model, datasets
 from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
+from datetime import datetime
 
 # ------------- read in entries from all files -------------
 
@@ -23,9 +24,6 @@ for file in data_raw:
     for entry in file:
         if ("topics" in entry) and ("body" in entry):
             data_raw_filtered.append(entry)
-
-print len(data_raw_filtered)
-# print "data_raw_filtered",data_raw_filtered[0]
 
 # ------------------ create bag of words -----------------
 
@@ -48,11 +46,14 @@ data_clean_train = []
 for line in data_clean:
     data_clean_train.append(" ".join(line))  # glue all words together into a list of strings
 
+# ------------------ random forest -----------------
+
 vectorizer = CountVectorizer(analyzer = "word",
                              tokenizer = None,
                              preprocessor = None,
                              stop_words = None
                              )
+old_time = datetime.now()
 
 train_data_features = vectorizer.fit_transform(data_clean_train)
 
@@ -61,6 +62,9 @@ print train_data_features_array.shape
 
 clf = RandomForestClassifier(n_estimators=50)
 clf = clf.fit(train_data_features[0:8301],topics_has_earn_word[0:8301])
+print "Execution time: " , datetime.now() - old_time
 
 score = clf.score(train_data_features[8301:],topics_has_earn_word[8301:])
-print score
+print "score", score * 100
+
+# ------------------ feature hashing -----------------
