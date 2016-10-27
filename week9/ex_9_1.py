@@ -56,25 +56,47 @@ vectorizer = CountVectorizer(analyzer = "word",
                              preprocessor = None,
                              stop_words = None
                              )
-old_time = datetime.now()
 
 train_data_features = vectorizer.fit_transform(data_clean_train)
 
 train_data_features_array = train_data_features.toarray()
-print train_data_features_array.shape
+# print train_data_features_array.shape
+
+old_time = datetime.now()
 
 clf = RandomForestClassifier(n_estimators=50)
 clf = clf.fit(train_data_features[0:8301],topics_has_earn_word[0:8301])
-print "Execution time: " , datetime.now() - old_time
+print "CountVecorizer BoW encoding \n" \
+      "80% train data, 20% test data \n" \
+      "Using 50 trees in RandomForestClassifier \n" \
+      "Execution time: " , datetime.now() - old_time
+
 
 score = clf.score(train_data_features[8301:],topics_has_earn_word[8301:])
-print "score", score * 100
+print "Score:", score * 100, "\n"
 
 # ------------------ feature hashing -----------------
 
-# from http://scikit-learn.org/stable/auto_examples/text/hashing_vs_dict_vectorizer.html
+# from http://scikit-learn.org/stable/auto_examples/text/document_classification_20newsgroups.html#sphx-glr-auto-examples-text-document-classification-20newsgroups-py
 
+vectorizer = HashingVectorizer(stop_words='english', non_negative=True,
+                                   n_features=1000)
+X_train = vectorizer.transform(data_clean_train)
 
+old_time = datetime.now()
+
+clf = RandomForestClassifier(n_estimators=50)
+
+clf.fit(X_train[0:8301], topics_has_earn_word[0:8301])
+
+score = clf.score(X_train[8301:],topics_has_earn_word[8301:])
+
+print "HashingVecorizer BoW encoding \n" \
+      "80% train data, 20% test data \n" \
+      "Using 50 trees in RandomForestClassifier \n" \
+      "Execution time: " , datetime.now() - old_time, "\n"
+
+print "Score:", score * 100
 
 
 
