@@ -77,15 +77,13 @@ X_train = vectorizer.transform(data_clean_train)
 old_time = datetime.now()
 
 clf = RandomForestClassifier(n_estimators=50)
-
 clf.fit(X_train[0:8301], topics_has_earn_word[0:8301])
-
-score = clf.score(X_train[8301:],topics_has_earn_word[8301:])
-
 print "HashingVecorizer BoW encoding \n" \
       "80% train data, 20% test data \n" \
       "Using 50 trees in RandomForestClassifier \n" \
-      "Execution time: " , datetime.now() - old_time, "\n"
+      "Execution time: " , datetime.now() - old_time
+
+score = clf.score(X_train[8301:],topics_has_earn_word[8301:])
 
 print "Score:", score * 100
 
