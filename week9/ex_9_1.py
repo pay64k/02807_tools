@@ -40,7 +40,7 @@ data_clean_train = []
 for line in data_clean:
     data_clean_train.append(" ".join(line))  # glue all words together into a list of strings
 
-# ------------------ random forest -----------------
+# ------------------  'normal' BoW -----------------
 
 vectorizer = CountVectorizer(analyzer = "word",
                              tokenizer = None,
@@ -66,7 +66,7 @@ print "CountVecorizer BoW encoding \n" \
 score = clf.score(train_data_features[8301:],topics_has_earn_word[8301:])
 print "Score:", score * 100, "\n"
 
-# ------------------ feature hashing -----------------
+# ------------------ BoW using feature hashing -----------------
 
 # from http://scikit-learn.org/stable/auto_examples/text/document_classification_20newsgroups.html#sphx-glr-auto-examples-text-document-classification-20newsgroups-py
 
