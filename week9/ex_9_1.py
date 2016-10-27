@@ -7,7 +7,10 @@ from sklearn import linear_model, datasets
 from sklearn.metrics import accuracy_score
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_extraction.text import HashingVectorizer
 from datetime import datetime
+from collections import defaultdict
+
 
 # ------------- read in entries from all files -------------
 
@@ -68,3 +71,10 @@ score = clf.score(train_data_features[8301:],topics_has_earn_word[8301:])
 print "score", score * 100
 
 # ------------------ feature hashing -----------------
+
+# from http://scikit-learn.org/stable/auto_examples/text/hashing_vs_dict_vectorizer.html
+
+
+
+
+
