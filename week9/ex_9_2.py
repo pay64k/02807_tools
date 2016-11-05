@@ -30,7 +30,7 @@ print "All articles loaded..."
 data_clean = []
 
 # TODO: remove amount restriction
-for entry in data_raw_filtered:
+for entry in data_raw_filtered[:5]:
     words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
     data_clean.append({"body": [w for w in words_list.lower().split()],
                        "topics": entry["topics"],
@@ -53,9 +53,7 @@ _features = vectorizer.fit_transform(data_words_only)
 
 train_data_features_array = _features.toarray()
 
-print "Got all features..."
-
-print train_data_features_array.shape
+print "Got all features...", train_data_features_array.shape
 
 # print train_data_features_array
 # ----------------------------------------
@@ -66,12 +64,13 @@ original_array = np.transpose(train_data_features_array)
 amount_of_permutations = 3
 hash_functions_array = [[0 for i in range(original_array.shape[1])] for ii in range(amount_of_permutations)]
 
+print "Starting minHash for", amount_of_permutations, "permutations..."
+
 for permutation in range(amount_of_permutations):
     permuted_array = np.copy(original_array)
     np.random.shuffle(permuted_array)
     permuted_array = np.transpose(permuted_array)
     row_index = 0
-    print
     for row in permuted_array:
         column_index = 0
         for number in row:
@@ -80,7 +79,16 @@ for permutation in range(amount_of_permutations):
                 break
             column_index += 1
         row_index += 1
+    print "Done with permutation #:", permutation, "/", amount_of_permutations
+
+# each row corresponds to an article
+hash_functions_array = np.transpose(hash_functions_array)
 
 
-print hash_functions_array
+def jaccard_dist(set_1,set_2):
+    intersection = len(set_1 & set_2)
+    union = len(set_1 | set_2)
+    return 1 - intersection / float(union)
+
+print "Creating buckets based on Jaccard distance..."
 
