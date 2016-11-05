@@ -10,7 +10,6 @@ def min_hash(perm, data, reference_data):
           "#---------------------------------------#"
     original_array = np.transpose(data)
 
-    # TODO: remove amount restriction
     amount_of_permutations = perm
     hash_functions_array = [[0 for i in range(original_array.shape[1])] for ii in range(amount_of_permutations)]
 
@@ -41,10 +40,14 @@ def min_hash(perm, data, reference_data):
     print "Creating buckets based on Jaccard distance..."
 
     buckets = {}
+    article_index = 0
 
+    # calculate similarities:
     for article in hash_functions_array:
-
-
+        for remaining_article in
+        buckets[reference_data[article_index]["id"]] = 0
+        article_index += 1
+    print buckets
     print "#----------------- Done ----------------#"
 
 # ------------- read in entries from all files -------------
