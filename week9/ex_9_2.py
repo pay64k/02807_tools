@@ -32,8 +32,8 @@ data_clean = []
 for entry in data_raw_filtered[:3]:
     words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
     data_clean.append({"body": [w for w in words_list.lower().split()],
-                               "topics": entry["topics"],
-                               "id": entry["id"]})
+                       "topics": entry["topics"],
+                       "id": entry["id"]})
 
 print data_clean[0]
 
@@ -53,63 +53,41 @@ _features = vectorizer.fit_transform(data_words_only)
 train_data_features_array = _features.toarray()
 print train_data_features_array.shape
 
-print train_data_features_array
+# print train_data_features_array
 # ----------------------------------------
 # ----------------------------------------
 # ----------------------------------------
 
-minhashArray = np.transpose(train_data_features_array)
-print minhashArray, "\n^ up there is minhashArray"
+original_array = np.transpose(train_data_features_array)
 
+
+
+def check_if_array_is_complete(array):
+    for elem in array:
+        if elem == 0:
+            return False
+    return True
+
+
+# TODO: remove amount restriction
 amount_of_permutations = 3
+hash_functions_array = [[0 for i in range(original_array.shape[1])] for ii in range(amount_of_permutations)]
+for permutation in range(amount_of_permutations):
+    permuted_array = np.copy(original_array)
+    np.random.shuffle(permuted_array)
+    # print permuted_array
+    permuted_array = np.transpose(permuted_array)
+    # print permuted_array
+    row_index = 0
+    for row in permuted_array:
+        column_index = 0
+        for number in row:
+            if number > 0:
+                hash_functions_array[permutation][row_index] = column_index
+                break
+            column_index += 1
+        row_index += 1
 
-for hash in range(amount_of_permutations):
-    np.take(minhashArray, np.random.permutation(minhashArray.shape[0]), axis=0, out=minhashArray)
 
-# get the row and columns of arrray
-r = np.shape(minhashArray)[0]
-c = np.shape(minhashArray)[1]
-# Result=np.zeros((r,c))
+print hash_functions_array
 
-# Creating the phi size for permutation
-phiSize = r
-permutationArray = np.array(range(phiSize))
-np.random.shuffle(permutationArray)
-
-Result = np.zeros((r, c))
-# for creat result I iterate trough rows and each time I shuffle permutationArrya and base of the array I create
-# a result which obtain base of the first occurance of the 1 I checked with three articles and not changing permutationArray
-# and the result was reasonable)
-for rMinhash in range(r):
-    np.random.shuffle(permutationArray)
-    for Col in range(c):
-        placeFinder = 0
-        for Row in permutationArray:
-            placeFinder += 1
-            if minhashArray[Row][Col] == 1:
-                Result[rMinhash][Col] = int(placeFinder)
-
-# I show the result her to see how the matrix look like after permutation
-# print Result
-
-# now I make a bukket list with the similarity in thier columns
-bucket = []
-bucketList = []
-WordColNr1 = -1
-listOfTheWords = vectorizer.get_feature_names()
-for word in listOfTheWords:
-    WordColNr1 += 1
-    WordColNr2 = -1
-    bucket = []
-    for word in listOfTheWords:
-        WordColNr2 += 1
-        if np.array_equal(Result[:, WordColNr1], Result[:, WordColNr2]):
-            bucket.append(word)
-
-    if bucket in bucketList:
-        bucketList.remove(bucket)
-    bucketList.append(bucket)
-
-# print "\n\nBuckets:\n\n"
-# for article in bucketList:
-#     print article, "\n\n"
