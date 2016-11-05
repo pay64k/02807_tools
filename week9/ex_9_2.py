@@ -23,19 +23,20 @@ for file in data_raw:
         if ("topics" in entry) and ("body" in entry):
             data_raw_filtered.append(entry)
 
-print data_raw_filtered[0]
+print "All articles loaded..."
+# print data_raw_filtered[0]
 # ------------------ create bag of words -----------------
 
 data_clean = []
 
 # TODO: remove amount restriction
-for entry in data_raw_filtered[:3]:
+for entry in data_raw_filtered:
     words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
     data_clean.append({"body": [w for w in words_list.lower().split()],
                        "topics": entry["topics"],
                        "id": entry["id"]})
 
-print data_clean[0]
+# print data_clean[0]
 
 data_words_only = []
 
@@ -51,34 +52,26 @@ vectorizer = CountVectorizer(analyzer="word",
 _features = vectorizer.fit_transform(data_words_only)
 
 train_data_features_array = _features.toarray()
+
+print "Got all features..."
+
 print train_data_features_array.shape
 
 # print train_data_features_array
 # ----------------------------------------
-# ----------------------------------------
-# ----------------------------------------
 
 original_array = np.transpose(train_data_features_array)
-
-
-
-def check_if_array_is_complete(array):
-    for elem in array:
-        if elem == 0:
-            return False
-    return True
-
 
 # TODO: remove amount restriction
 amount_of_permutations = 3
 hash_functions_array = [[0 for i in range(original_array.shape[1])] for ii in range(amount_of_permutations)]
+
 for permutation in range(amount_of_permutations):
     permuted_array = np.copy(original_array)
     np.random.shuffle(permuted_array)
-    # print permuted_array
     permuted_array = np.transpose(permuted_array)
-    # print permuted_array
     row_index = 0
+    print
     for row in permuted_array:
         column_index = 0
         for number in row:
