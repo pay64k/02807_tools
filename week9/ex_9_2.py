@@ -1,13 +1,10 @@
 import os, re, helpers
-
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_extraction.text import HashingVectorizer
 from datetime import datetime
 
 
-def min_hash(perm,data):
+def min_hash(perm, data, reference_data):
     print "#---------------------------------------#\n" \
           "Staring minHash with", perm, "permutations\n" \
           "#---------------------------------------#"
@@ -44,6 +41,9 @@ def min_hash(perm,data):
     print "Creating buckets based on Jaccard distance..."
 
     buckets = {}
+
+    for article in hash_functions_array:
+
 
     print "#----------------- Done ----------------#"
 
@@ -101,4 +101,4 @@ if __name__ == '__main__':
     # print train_data_features_array
     # ----------------------------------------
 
-    min_hash(3,_features_array)
+    min_hash(3,_features_array, data_clean)
