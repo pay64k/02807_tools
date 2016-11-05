@@ -2,6 +2,7 @@
   <dictionary name="root">
     <words>
       <w>hasher</w>
+      <w>minhash</w>
       <w>vectorizer</w>
     </words>
   </dictionary>
