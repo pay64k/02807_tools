@@ -1,7 +1,6 @@
 import os, re, helpers, sys
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
-from datetime import datetime
 from sklearn.metrics import jaccard_similarity_score as jac_sim
 
 
@@ -46,22 +45,22 @@ def min_hash(perm, data, reference_data):
                                  hash_functions_array[remaining_article])
             current_article_id = reference_data[article_index]["id"]
             remaining_article_id = reference_data[remaining_article]["id"]
-            if similarity >= 0.6:
+            if similarity > 0:
                 similarities.update({"id": remaining_article_id,
                                      "similarity": similarity})
         if len(similarities) > 0:
             all_similarities[current_article_id] = {"similar_articles": similarities}
-        if article_index % 11 == 0:
+        if article_index % 1 == 0:
             sys.stdout.write("\rCompleted:" + str(article_index + 1) + "/" + str(amount_of_all_articles))
             sys.stdout.flush()
     print "\n"
     print "Amount of non-zero similarities:", len(all_similarities)
 
-    for bucket_id in all_similarities:
-        similarities_for_one_id = all_similarities[bucket_id]
-        for sim in similarities_for_one_id:
-            # if similarities_for_one_id[sim]["similarity"] >= 0.8:
-            print bucket_id, "is similar to:", similarities_for_one_id[sim]["id"]
+    # for bucket_id in all_similarities:
+    #     similarities_for_one_id = all_similarities[bucket_id]
+    #     for sim in similarities_for_one_id:
+    #         if similarities_for_one_id[sim]["similarity"] >= 0.8:
+    #             print bucket_id, "is similar to:", similarities_for_one_id[sim]["id"]
 
 
         # for sim_id, sim in sims["similar_articles"].iteritems():
@@ -97,7 +96,7 @@ if __name__ == '__main__':
     data_clean = []
 
     # TODO: remove amount restriction
-    for entry in data_raw_filtered:
+    for entry in data_raw_filtered[:1000]:
         words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
         data_clean.append({"body": [w for w in words_list.lower().split()],
                            "topics": entry["topics"],
@@ -122,7 +121,65 @@ if __name__ == '__main__':
 
     print "Got all features...", _features_array.shape
 
-    # print train_data_features_array
     # ----------------------------------------
-    # print data_clean
-    min_hash(10, _features_array, data_clean)
+
+    sim1 = min_hash(10, _features_array, data_clean)
+
+
+
+
+
+    buckets = {}
+    print len(sim1)
+
+    for id in sim1:
+        similarities_for_one_id = sim1[id]
+        sims = []
+        for sim in similarities_for_one_id:
+            bucket = {}
+            if similarities_for_one_id[sim]["similarity"] >= 1:
+                sims.append(similarities_for_one_id[sim]["id"])
+        if len(sims)>0:
+            buckets[id] = {"similar": sims}
+    print "Buckets for 3 permutations and 5000 articles:"
+    for bucket in buckets:
+        print bucket, buckets[bucket]
+    # # ----------------------------------------
+    #
+    # sim1 = min_hash(5, _features_array, data_clean)
+    #
+    # buckets = {}
+    #
+    # for id in sim1:
+    #     similarities_for_one_id = sim1[id]
+    #     sims = []
+    #     for sim in similarities_for_one_id:
+    #         bucket = {}
+    #         if similarities_for_one_id[sim]["similarity"] >= 0.45:
+    #             sims.append(similarities_for_one_id[sim]["id"])
+    #     if len(sims)>0:
+    #         buckets[id] = {"similar": sims}
+    #
+    # print "Buckets for 5 permutations and 5000 articles:"
+    # for bucket in buckets:
+    #     print bucket, buckets[bucket]
+    #
+    # # ----------------------------------------
+    #
+    # sim1 = min_hash(10, _features_array, data_clean)
+    #
+    # buckets = {}
+    #
+    # for id in sim1:
+    #     similarities_for_one_id = sim1[id]
+    #     sims = []
+    #     for sim in similarities_for_one_id:
+    #         bucket = {}
+    #         if similarities_for_one_id[sim]["similarity"] >= 0.45:
+    #             sims.append(similarities_for_one_id[sim]["id"])
+    #     if len(sims)>0:
+    #         buckets[id] = {"similar": sims}
+    # print "Buckets for 10 permutations and 5000 articles:"
+    #
+    # for bucket in buckets:
+    #     print bucket, buckets[bucket]
