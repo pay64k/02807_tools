@@ -46,7 +46,7 @@ def min_hash(perm, data, reference_data):
                                  hash_functions_array[remaining_article])
             current_article_id = reference_data[article_index]["id"]
             remaining_article_id = reference_data[remaining_article]["id"]
-            if similarity > 0:
+            if similarity >= 0.6:
                 similarities.update({"id": remaining_article_id,
                                      "similarity": similarity})
         if len(similarities) > 0:
@@ -60,8 +60,8 @@ def min_hash(perm, data, reference_data):
     for bucket_id in all_similarities:
         similarities_for_one_id = all_similarities[bucket_id]
         for sim in similarities_for_one_id:
-            if similarities_for_one_id[sim]["similarity"] >= 0.8:
-                print bucket_id, "is similar to:", similarities_for_one_id[sim]["id"]
+            # if similarities_for_one_id[sim]["similarity"] >= 0.8:
+            print bucket_id, "is similar to:", similarities_for_one_id[sim]["id"]
 
 
         # for sim_id, sim in sims["similar_articles"].iteritems():
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     data_clean = []
 
     # TODO: remove amount restriction
-    for entry in data_raw_filtered[:2000]:
+    for entry in data_raw_filtered:
         words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
         data_clean.append({"body": [w for w in words_list.lower().split()],
                            "topics": entry["topics"],
