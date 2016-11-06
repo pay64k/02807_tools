@@ -1,4 +1,4 @@
-import os, re, helpers
+import os, re, helpers, sys
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from datetime import datetime
@@ -26,13 +26,12 @@ def min_hash(perm, data, reference_data):
                     break
                 column_index += 1
             row_index += 1
-        print "Done with permutation #:", permutation, "/", amount_of_permutations
+        print "Done with permutation #:", permutation + 1, "/", amount_of_permutations
 
-    # each row corresponds to an article
+    # each row corresponds to an article, each row index corresponds to article index in reference_data
     hash_functions_array = np.transpose(hash_functions_array)
 
-
-    def jaccard_dist(set_1,set_2):
+    def jaccard_dist(set_1, set_2):
         intersection = len(set_1 & set_2)
         union = len(set_1 | set_2)
         return 1 - intersection / float(union)
@@ -40,15 +39,30 @@ def min_hash(perm, data, reference_data):
     print "Creating buckets based on Jaccard distance..."
 
     buckets = {}
-    article_index = 0
+    amount_of_all_articles = len(hash_functions_array)
 
     # calculate similarities:
-    for article in hash_functions_array:
-        for remaining_article in
-        buckets[reference_data[article_index]["id"]] = 0
-        article_index += 1
-    print buckets
+    for article_index, article in enumerate(hash_functions_array):
+        similarities = []
+        for remaining_article in range(article_index + 1, amount_of_all_articles):
+            # print "for art:", article_index, "remaining are:", remaining_article
+            similarity = jaccard_dist(set(hash_functions_array[article_index]),
+                                      set(hash_functions_array[remaining_article]))
+            current_article_id = reference_data[article_index]["id"]
+            remaining_article_id = reference_data[remaining_article]["id"]
+            similarities.append({{"id": remaining_article_id,
+                                  "similarity": similarity}})
+            buckets[current_article_id] = {"similar_articles": []}
+            buckets[current_article_id]["similar_articles"].append({"id": remaining_article_id,
+                                                                    "similarity": similarity})
+        # print "Completed:", article_index, "/", amount_of_all_articles
+        sys.stdout.write("\rCompleted:" + str(article_index + 1) + "/" + str(amount_of_all_articles))
+        sys.stdout.flush()
+    print "\n"
+    for bucket in buckets.iteritems():
+        print bucket
     print "#----------------- Done ----------------#"
+
 
 # ------------- read in entries from all files -------------
 
@@ -76,7 +90,7 @@ if __name__ == '__main__':
     data_clean = []
 
     # TODO: remove amount restriction
-    for entry in data_raw_filtered[:5]:
+    for entry in data_raw_filtered[:100]:
         words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
         data_clean.append({"body": [w for w in words_list.lower().split()],
                            "topics": entry["topics"],
@@ -103,5 +117,5 @@ if __name__ == '__main__':
 
     # print train_data_features_array
     # ----------------------------------------
-
-    min_hash(3,_features_array, data_clean)
+    # print data_clean
+    min_hash(3, _features_array, data_clean)
