@@ -31,43 +31,45 @@ def min_hash(perm, data, reference_data):
 
     # each row corresponds to an article, each row index corresponds to article index in reference_data
     hash_functions_array = np.transpose(hash_functions_array)
-    print hash_functions_array
-    def jaccard_dist(set_1, set_2):
-        intersection = len(set_1 & set_2)
-        union = len(set_1 | set_2)
-        return intersection / float(union)
+    # print hash_functions_array
 
-    print "Creating buckets..."
+    print "Calculating..."
 
-    buckets = {}
+    all_similarities = {}
     amount_of_all_articles = len(hash_functions_array)
 
     # calculate similarities:
     for article_index, article in enumerate(hash_functions_array):
-        similarities = []
+        similarities = {}
         for remaining_article in range(article_index + 1, amount_of_all_articles):
-            # print "for art:", article_index, "remaining are:", remaining_article
             similarity = jac_sim(hash_functions_array[article_index],
                                  hash_functions_array[remaining_article])
             current_article_id = reference_data[article_index]["id"]
             remaining_article_id = reference_data[remaining_article]["id"]
             if similarity > 0:
-                similarities.append({"id": remaining_article_id,
+                similarities.update({"id": remaining_article_id,
                                      "similarity": similarity})
         if len(similarities) > 0:
-            buckets[current_article_id] = {"similar articles:": similarities}
-        if article_index % 10 == 0:
+            all_similarities[current_article_id] = {"similar_articles": similarities}
+        if article_index % 11 == 0:
             sys.stdout.write("\rCompleted:" + str(article_index + 1) + "/" + str(amount_of_all_articles))
             sys.stdout.flush()
     print "\n"
-    print "Amount of buckets:", len(buckets)
-    bla = 0
-    for bucket in buckets.iteritems():
-        print bucket
-        bla+=1
-        if bla >=5:break
-    print "#----------------- Done ----------------#"
+    print "Amount of non-zero similarities:", len(all_similarities)
 
+    for bucket_id in all_similarities:
+        similarities_for_one_id = all_similarities[bucket_id]
+        for sim in similarities_for_one_id:
+            if similarities_for_one_id[sim]["similarity"] >= 0.8:
+                print bucket_id, "is similar to:", similarities_for_one_id[sim]["id"]
+
+
+        # for sim_id, sim in sims["similar_articles"].iteritems():
+        #     print sim_id, sim
+        #     if sim >= 0.8:
+        #         print id, "is similar to:", sim_id
+    print "#----------------- Done ----------------#"
+    return all_similarities
 
 # ------------- read in entries from all files -------------
 
@@ -95,7 +97,7 @@ if __name__ == '__main__':
     data_clean = []
 
     # TODO: remove amount restriction
-    for entry in data_raw_filtered[:5000]:
+    for entry in data_raw_filtered[:2000]:
         words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
         data_clean.append({"body": [w for w in words_list.lower().split()],
                            "topics": entry["topics"],
@@ -123,4 +125,4 @@ if __name__ == '__main__':
     # print train_data_features_array
     # ----------------------------------------
     # print data_clean
-    min_hash(3, _features_array, data_clean)
+    min_hash(10, _features_array, data_clean)
