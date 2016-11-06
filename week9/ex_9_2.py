@@ -2,6 +2,7 @@ import os, re, helpers, sys
 import numpy as np
 from sklearn.feature_extraction.text import CountVectorizer
 from datetime import datetime
+from sklearn.metrics import jaccard_similarity_score as jac_sim
 
 
 def min_hash(perm, data, reference_data):
@@ -30,13 +31,13 @@ def min_hash(perm, data, reference_data):
 
     # each row corresponds to an article, each row index corresponds to article index in reference_data
     hash_functions_array = np.transpose(hash_functions_array)
-
+    print hash_functions_array
     def jaccard_dist(set_1, set_2):
         intersection = len(set_1 & set_2)
         union = len(set_1 | set_2)
-        return 1 - intersection / float(union)
+        return intersection / float(union)
 
-    print "Creating buckets based on Jaccard distance..."
+    print "Creating buckets..."
 
     buckets = {}
     amount_of_all_articles = len(hash_functions_array)
@@ -46,21 +47,25 @@ def min_hash(perm, data, reference_data):
         similarities = []
         for remaining_article in range(article_index + 1, amount_of_all_articles):
             # print "for art:", article_index, "remaining are:", remaining_article
-            similarity = jaccard_dist(set(hash_functions_array[article_index]),
-                                      set(hash_functions_array[remaining_article]))
+            similarity = jac_sim(hash_functions_array[article_index],
+                                 hash_functions_array[remaining_article])
             current_article_id = reference_data[article_index]["id"]
             remaining_article_id = reference_data[remaining_article]["id"]
-            similarities.append({{"id": remaining_article_id,
-                                  "similarity": similarity}})
-            buckets[current_article_id] = {"similar_articles": []}
-            buckets[current_article_id]["similar_articles"].append({"id": remaining_article_id,
-                                                                    "similarity": similarity})
-        # print "Completed:", article_index, "/", amount_of_all_articles
-        sys.stdout.write("\rCompleted:" + str(article_index + 1) + "/" + str(amount_of_all_articles))
-        sys.stdout.flush()
+            if similarity > 0:
+                similarities.append({"id": remaining_article_id,
+                                     "similarity": similarity})
+        if len(similarities) > 0:
+            buckets[current_article_id] = {"similar articles:": similarities}
+        if article_index % 10 == 0:
+            sys.stdout.write("\rCompleted:" + str(article_index + 1) + "/" + str(amount_of_all_articles))
+            sys.stdout.flush()
     print "\n"
+    print "Amount of buckets:", len(buckets)
+    bla = 0
     for bucket in buckets.iteritems():
         print bucket
+        bla+=1
+        if bla >=5:break
     print "#----------------- Done ----------------#"
 
 
@@ -90,7 +95,7 @@ if __name__ == '__main__':
     data_clean = []
 
     # TODO: remove amount restriction
-    for entry in data_raw_filtered[:100]:
+    for entry in data_raw_filtered[:5000]:
         words_list = re.sub("[^a-zA-Z]", " ", entry['body'])
         data_clean.append({"body": [w for w in words_list.lower().split()],
                            "topics": entry["topics"],
