@@ -178,6 +178,13 @@ for title in movies.keys():
 
 print len(movies), "amount of movies that have genre"
 
+# c = 0
+# for title in movies:
+#     print title, movies[title]
+#     c+=1
+#     if c >=100: break
+
 ######################################################
-#               genre filtering
+#                business filtering
 ######################################################
+
