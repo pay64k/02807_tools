@@ -188,3 +188,33 @@ print len(movies), "amount of movies that have genre"
 #                business filtering
 ######################################################
 
+business_raw = []
+
+with open("IMDB_files_link/_filtered_data/business.filtered") as data_file:
+    reader = csv.reader(data_file, delimiter='\n')
+    for line in reader:
+        full_line = " ".join(line)
+        business_raw.append(full_line)
+
+business_less_raw = []
+temp = []
+for line in business_raw:
+    if line != "----":
+        temp.append(line)
+    else:
+        business_less_raw.append(temp)
+        temp = []
+
+movies_with_values = []
+good_count = 0
+for movie in business_less_raw:
+    for entry in movie:
+        if "BT" in entry:
+            good_count +=1
+        if "GR" in entry:
+            good_count +=1
+    if good_count == 2:
+        movies_with_values.append(movie)
+    good_count = 0
+
+print len(movies_with_values), "amount of movies that have stated business values"
