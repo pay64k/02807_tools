@@ -1,4 +1,4 @@
-import csv
+import csv, helpers
 
 movies ={}
 movies_amount = 0
@@ -148,8 +148,36 @@ for title in movies.keys():
     if "director" not in movies[title]:
         movies.pop(title, None)
 
+# print "memory then",helpers.memory()
+# free up some memory
+del movie_and_its_director, directors_raw, directors_less_raw, temp
+# print "memory now",helpers.memory()
+
 print len(movies), "amount of movies that have directors"
 
 ######################################################
-#               language filtering
+#               genre filtering
+######################################################
+
+with open("IMDB_files_link/_filtered_data/genres.filtered") as data_file:
+    reader = csv.reader(data_file, delimiter='\r')
+    for line in reader:
+        # line variable here is a list of strings, so we join it into one string
+        full_line = " ".join(line)
+        # partition returns 3-tuple: (part_before_delimiter, delimiter, part_after_delimiter)
+        parted = full_line.partition("\t")
+        title = parted[0]
+        # in the part_after_delimiter we delete all \t characters
+        genre = parted[2].replace("\t","")
+        if title in movies:
+            movies[title].update({"genre": genre})
+
+for title in movies.keys():
+    if "genre" not in movies[title]:
+        movies.pop(title, None)
+
+print len(movies), "amount of movies that have genre"
+
+######################################################
+#               genre filtering
 ######################################################

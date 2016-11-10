@@ -80,6 +80,51 @@ def language_fun():
 #
 # print movie_and_its_director
 
+
+import os
+_proc_status = '/proc/%d/status' % os.getpid()
+
+_scale = {'kB': 1024.0, 'mB': 1024.0*1024.0,
+          'KB': 1024.0, 'MB': 1024.0*1024.0}
+
+def _VmB(VmKey):
+    '''Private.
+    '''
+    global _proc_status, _scale
+     # get pseudo file  /proc/<pid>/status
+    try:
+        t = open(_proc_status)
+        v = t.read()
+        t.close()
+    except:
+        return 0.0  # non-Linux?
+     # get VmKey line e.g. 'VmRSS:  9999  kB\n ...'
+    i = v.index(VmKey)
+    v = v[i:].split(None, 3)  # whitespace
+    if len(v) < 3:
+        return 0.0  # invalid format?
+     # convert Vm value to bytes
+    return float(v[1]) * _scale[v[2]]
+
+
+def memory(since=0.0):
+    '''Return memory usage in bytes.
+    '''
+    return _VmB('VmSize:') - since
+
+
+def resident(since=0.0):
+    '''Return resident memory usage in bytes.
+    '''
+    return _VmB('VmRSS:') - since
+
+
+def stacksize(since=0.0):
+    '''Return stack size in bytes.
+    '''
+    return _VmB('VmStk:') - since
+
+
 directors_raw = []
 
 with open("IMDB_files_link/_filtered_data/directors.filtered.new") as data_file:
@@ -88,51 +133,51 @@ with open("IMDB_files_link/_filtered_data/directors.filtered.new") as data_file:
         full_line = " ".join(line)
         directors_raw.append(full_line)
 
-directors_less_raw = []
-temp = []
-for line in directors_raw:
-    # each director is separated by new line character, in our case its an empty list of strings
-    if line != "":
-        # print "if", line
-        temp.append(line)
-    else:
-        # print "else"
-        directors_less_raw.append(temp)
-        temp = []
-
-movie_and_its_director = {}
-
-for line in directors_less_raw:
-    # first element is always director \t\t movie or director \t movie
-    # if a director has only one movie
-    if len(line) <= 1:
-        # for example: ["'Kid Niagara' Kallet, Harry\tDrug Demon Romance (2012)  (co-director)"]
-        full_line = " ".join(line)
-        parted = full_line.partition("\t")
-        director = parted[0]
-        title = parted[2].replace("\t", "")
-        title_parted = title.partition("  ")[0]
-        # if "(co-director)" in title:
-        #     title = title.replace("  (co-director)", "")
-        movie_and_its_director[title_parted] = {"director": director}
-    else:
-        # for example: ["'t Hooft, Albert\tFallin' Floyd (2013)", '\t\tLittle Quentin (2010)',
-        #  '\t\tTrippel Trappel Dierensinterklaas (2014)']
-        first_line = line[0]
-        parted = first_line.partition("\t")
-        director = parted[0]
-        title_first = parted[2].replace("\t", "")
-        title_parted = title_first.partition("  ")[0]
-        # if "(co-director)" in title_first:
-        #     title_first = title_first.replace("  (co-director)", "")
-        all_dir_movies = [title_parted]
-        for remaining_title in line[1:len(line)]:
-            remaining_title = remaining_title.replace("\t", "")
-            title_parted = remaining_title.partition("  ")[0]
-            # if "(co-director)" in remaining_title:
-            #     remaining_title = remaining_title.replace("  (co-director)", "")
-            all_dir_movies.append(title_parted)
-        for title in all_dir_movies:
-            movie_and_its_director[title] = {"director": director}
-
-print len(movie_and_its_director)
+# directors_less_raw = []
+# temp = []
+# for line in directors_raw:
+#     # each director is separated by new line character, in our case its an empty list of strings
+#     if line != "":
+#         # print "if", line
+#         temp.append(line)
+#     else:
+#         # print "else"
+#         directors_less_raw.append(temp)
+#         temp = []
+#
+# movie_and_its_director = {}
+#
+# for line in directors_less_raw:
+#     # first element is always director \t\t movie or director \t movie
+#     # if a director has only one movie
+#     if len(line) <= 1:
+#         # for example: ["'Kid Niagara' Kallet, Harry\tDrug Demon Romance (2012)  (co-director)"]
+#         full_line = " ".join(line)
+#         parted = full_line.partition("\t")
+#         director = parted[0]
+#         title = parted[2].replace("\t", "")
+#         title_parted = title.partition("  ")[0]
+#         # if "(co-director)" in title:
+#         #     title = title.replace("  (co-director)", "")
+#         movie_and_its_director[title_parted] = {"director": director}
+#     else:
+#         # for example: ["'t Hooft, Albert\tFallin' Floyd (2013)", '\t\tLittle Quentin (2010)',
+#         #  '\t\tTrippel Trappel Dierensinterklaas (2014)']
+#         first_line = line[0]
+#         parted = first_line.partition("\t")
+#         director = parted[0]
+#         title_first = parted[2].replace("\t", "")
+#         title_parted = title_first.partition("  ")[0]
+#         # if "(co-director)" in title_first:
+#         #     title_first = title_first.replace("  (co-director)", "")
+#         all_dir_movies = [title_parted]
+#         for remaining_title in line[1:len(line)]:
+#             remaining_title = remaining_title.replace("\t", "")
+#             title_parted = remaining_title.partition("  ")[0]
+#             # if "(co-director)" in remaining_title:
+#             #     remaining_title = remaining_title.replace("  (co-director)", "")
+#             all_dir_movies.append(title_parted)
+#         for title in all_dir_movies:
+#             movie_and_its_director[title] = {"director": director}
+#
+# print len(movie_and_its_director)
