@@ -14,23 +14,17 @@ def language_fun():
             parted = full_line.partition("\t")
             title = parted[0]
             # in the part_after_delimiter we delete all \t characters
-            language = parted[2].replace("\t","")
+            language = parted[2].replace("\t", "")
             if language.startswith("English") and language != "English":
-            # if "English" in language or "english" in language:
+                # if "English" in language or "english" in language:
                 english_variations.add(language)
-                lets_say_its_english +=1
+                lets_say_its_english += 1
 
     for eng in english_variations:
         print eng
     print len(english_variations)
     print lets_say_its_english
 
-
-# with open("IMDB_files_link/directors.list") as data_file:
-#     reader = csv.reader(data_file, delimiter='\n')
-#     for line in reader:
-#         print "line" ,line
-#         print "--------------------------"
 
 directors_raw = []
 
@@ -62,25 +56,26 @@ for line in directors_less_raw:
         full_line = " ".join(line)
         parted = full_line.partition("\t")
         director = parted[0]
-        title = parted[2].replace("\t","")
+        title = parted[2].replace("\t", "")
         if "(co-director)" in title:
-            title = title.replace("  (co-director)","")
+            title = title.replace("  (co-director)", "")
         movie_and_its_director[title] = {"director": director}
     else:
-        #for example: ["'t Hooft, Albert\tFallin' Floyd (2013)", '\t\tLittle Quentin (2010)', '\t\tTrippel Trappel Dierensinterklaas (2014)']
-        # print line
+        # for example: ["'t Hooft, Albert\tFallin' Floyd (2013)", '\t\tLittle Quentin (2010)',
+        #  '\t\tTrippel Trappel Dierensinterklaas (2014)']
         first_line = line[0]
         parted = first_line.partition("\t")
         director = parted[0]
         title_first = parted[2].replace("\t", "")
         if "(co-director)" in title_first:
             title_first = title_first.replace("  (co-director)", "")
-        temp = [title_first]
+        all_dir_movies = [title_first]
         for remaining_title in line[1:len(line)]:
-            remaining_title = remaining_title.replace("\t","")
+            remaining_title = remaining_title.replace("\t", "")
             if "(co-director)" in remaining_title:
                 remaining_title = remaining_title.replace("  (co-director)", "")
-            temp.append(remaining_title)
-        print director, temp
+            all_dir_movies.append(remaining_title)
+        for title in all_dir_movies:
+            movie_and_its_director[title] = {"director": director}
 
 print movie_and_its_director
