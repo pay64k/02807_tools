@@ -182,35 +182,96 @@ def stacksize(since=0.0):
 #
 # print len(movie_and_its_director)
 
-business_raw = []
+# business_raw = []
+#
+# with open("IMDB_files_link/_filtered_data/_test1") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for line in reader:
+#         full_line = " ".join(line)
+#         business_raw.append(full_line)
+#
+# business_less_raw = []
+# temp = []
+# for line in business_raw:
+#     if line != "----":
+#         temp.append(line)
+#     else:
+#         business_less_raw.append(temp)
+#         temp = []
+#
+# movies_with_values = []
+# good_count = 0
+# for movie in business_less_raw:
+#     # print "movie", movie
+#     for entry in movie:
+#         # print "entry", entry
+#         if "BT" in entry:
+#             good_count +=1
+#         if "GR" in entry:
+#             good_count +=1
+#     if good_count == 2:
+#         movies_with_values.append(movie)
+#     good_count = 0
+#
+# print movies_with_values
 
-with open("IMDB_files_link/_filtered_data/_test1") as data_file:
-    reader = csv.reader(data_file, delimiter='\n')
-    for line in reader:
-        full_line = " ".join(line)
-        business_raw.append(full_line)
 
-business_less_raw = []
-temp = []
-for line in business_raw:
-    if line != "----":
-        temp.append(line)
-    else:
-        business_less_raw.append(temp)
-        temp = []
+# business_raw = []
+#
+# with open("IMDB_files_link/_filtered_data/business.filtered") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for line in reader:
+#         full_line = " ".join(line)
+#         business_raw.append(full_line)
+#
+# business_less_raw = []
+# temp = []
+# for line in business_raw:
+#     if line != "----":
+#         temp.append(line)
+#     else:
+#         business_less_raw.append(temp)
+#         temp = []
+#
+# movies_with_values = []
+# mandatory_count = 0
+# gr_count = 0
+# temp = []
+# for movie in business_less_raw:
+#     for entry in movie:
+#         if "MV" in entry:
+#             temp.append(entry)
+#             mandatory_count += 1
+#         if "BT" in entry:
+#             temp.append(entry)
+#             mandatory_count += 1
+#         if "GR" in entry:
+#             temp.append(entry)
+#             gr_count += 1
+#     if mandatory_count >= 2 and gr_count > 0:
+#         movies_with_values.append(temp)
+#     temp = []
+#     mandatory_count = 0
+#     gr_count = 0
+#
+# movie_business = {}
+# budget_temp = []
+# gross_temp = []
+# for movie in movies_with_values:
+#     for entry in movie:
+#         if "MV" in entry:
+#             title = entry.partition("MV: ")[2]
+#         if "BT" in entry:
+#             bt = entry.partition("BT: ")[2]
+#             budget_temp.append(bt)
+#         if "GR" in entry:
+#             gr = entry.partition("GR: ")[2]
+#             gross_temp.append(gr)
+#
+#     movie_business[title]={"budget":budget_temp, "gross": gross_temp}
+#
+#     budget_temp = []
+#     gross_temp = []
 
-movies_with_values = []
-good_count = 0
-for movie in business_less_raw:
-    # print "movie", movie
-    for entry in movie:
-        # print "entry", entry
-        if "BT" in entry:
-            good_count +=1
-        if "GR" in entry:
-            good_count +=1
-    if good_count == 2:
-        movies_with_values.append(movie)
-    good_count = 0
 
-print movies_with_values
+# print len(movie_business), "amount of movies that have stated business values"

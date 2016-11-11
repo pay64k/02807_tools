@@ -206,15 +206,54 @@ for line in business_raw:
         temp = []
 
 movies_with_values = []
-good_count = 0
+mandatory_count = 0
+gr_count = 0
+temp = []
 for movie in business_less_raw:
     for entry in movie:
+        if "MV" in entry:
+            temp.append(entry)
+            mandatory_count += 1
         if "BT" in entry:
-            good_count +=1
+            temp.append(entry)
+            mandatory_count += 1
         if "GR" in entry:
-            good_count +=1
-    if good_count == 2:
-        movies_with_values.append(movie)
-    good_count = 0
+            temp.append(entry)
+            gr_count += 1
+        # if "RT" in entry:
+        #     temp.append(entry)
+        #     mandatory_count += 1
+    if mandatory_count >= 2 and gr_count > 0:
+        movies_with_values.append(temp)
+    temp = []
+    mandatory_count = 0
+    gr_count = 0
 
-print len(movies_with_values), "amount of movies that have stated business values"
+budget_temp = []
+gross_temp = []
+title = ""
+
+print len(movies_with_values), "ALL movies that have stated at least budget and gross values"
+
+for movie in movies_with_values:
+    for entry in movie:
+        if "MV" in entry:
+            title = entry.partition("MV: ")[2]
+        if "BT" in entry:
+            bt = entry.partition("BT: ")[2]
+            budget_temp.append(bt)
+        if "GR" in entry:
+            gr = entry.partition("GR: ")[2]
+            gross_temp.append(gr)
+    if title != "" and title in movies:
+        movies[title].update({"budget": budget_temp, "gross": gross_temp})
+    title = ""
+    budget_temp = []
+    gross_temp = []
+
+for title in movies.keys():
+    if "budget" not in movies[title]:
+        # print title
+        movies.pop(title, None)
+
+print len(movies), "amount of movies that have stated business values"
