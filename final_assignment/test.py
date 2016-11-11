@@ -270,5 +270,5 @@ del business_raw, business_less_raw, movies_with_values, budget_temp, gross_temp
 
 print len(movies), "amount of movies that have stated business values"
 ######################################################
-#                business filtering
+#                actors filtering
 ######################################################

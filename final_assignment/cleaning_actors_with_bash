@@ -1,0 +1,15 @@
+
+sed "s/\t\t/\t/g" actors.list > _filtered_data/actors.filtered
+sed "s/\b\t\b/\n/g" _filtered_data/actors.filtered > _filtered_data/actors.filtered.2
+sed "s/\t\t//g" _filtered_data/actors.filtered.2 > _filtered_data/actors.filtered.3
+sed "s/\t/\n/g" _filtered_data/actors.filtered.3 > _filtered_data/actors.filtered.4
+sed '/"/d' _filtered_data/actors.filtered.4 >_filtered_data/actors.filtered.finished
+cat -s _filtered_data/actors.filtered.finished > _filtered_data/actors.filtered
+
+
+sed "s/\t\t/\t/g" actresses.list > _filtered_data/actresses.filtered;
+sed "s/\b\t\b/\n/g" _filtered_data/actresses.filtered > _filtered_data/actresses.filtered.2;
+sed "s/\t\t//g" _filtered_data/actresses.filtered.2 > _filtered_data/actresses.filtered.3;
+sed "s/\t/\n/g" _filtered_data/actresses.filtered.3 > _filtered_data/actresses.filtered.4;
+sed '/"/d' _filtered_data/actresses.filtered.4 >_filtered_data/actresses.filtered.finished;
+cat -s _filtered_data/actresses.filtered.finished > _filtered_data/actresses.filtered
