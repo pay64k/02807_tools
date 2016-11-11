@@ -225,16 +225,16 @@ for movie in business_less_raw:
         if "MV" in entry:
             temp.append(entry)
             mandatory_count += 1
-        if "BT" in entry:
-            temp.append(entry)
-            mandatory_count += 1
+        if "BT" in entry:                     #uncomment to have movies with budget only
+            temp.append(entry)                #comment to have movies without budget
+            mandatory_count += 1              #
         if "GR" in entry:
             temp.append(entry)
             gr_count += 1
         # if "RT" in entry:
         #     temp.append(entry)
         #     mandatory_count += 1
-    if mandatory_count >= 2 and gr_count > 0:
+    if mandatory_count >= 2 and gr_count > 0:   # change first condition to 2 if wanna have budget, 1 otherwise
         movies_with_values.append(temp)
     temp = []
     mandatory_count = 0
@@ -244,7 +244,7 @@ budget_temp = []
 gross_temp = []
 title = ""
 
-print len(movies_with_values), "ALL movies that have stated at least budget and gross values"
+# print len(movies_with_values), "ALL movies that have stated at least budget and gross values"
 
 for movie in movies_with_values:
     for entry in movie:
@@ -264,11 +264,11 @@ for movie in movies_with_values:
 
 for title in movies.keys():
     if "budget" not in movies[title]:
-        # print title
         movies.pop(title, None)
 
+del business_raw, business_less_raw, movies_with_values, budget_temp, gross_temp, temp
+
 print len(movies), "amount of movies that have stated business values"
-print movies["Avatar (2009)"]
 ######################################################
 #                business filtering
 ######################################################
