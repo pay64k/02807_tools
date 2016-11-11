@@ -25,6 +25,8 @@ print len(movies), "movies amount after year filter"
 #               language filtering
 ######################################################
 
+movies_with_languages = {}
+
 with open("IMDB_files_link/_filtered_data/language.filtered") as data_file:
     reader = csv.reader(data_file, delimiter='\r')
     for line in reader:
@@ -35,7 +37,16 @@ with open("IMDB_files_link/_filtered_data/language.filtered") as data_file:
         title = parted[0]
         # in the part_after_delimiter we delete all \t characters
         language = parted[2].replace("\t","")
-        # if the language of the movie is not english delete its entry from movies
+        # this is because some movies like Avatar (2009) have more than one language
+        if title not in movies_with_languages:
+            movies_with_languages[title] = [language]
+        else:
+            movies_with_languages[title].append(language)
+
+for title in movies_with_languages:
+    languages = movies_with_languages[title]
+    for language in languages:
+        # if one of the languages of the movie is not english delete its entry from movies
         # there are different language descriptions in the language.list
         # like for example: English	(English Subtitles), English	(Original Version) etc
         if language == "English" \
@@ -48,7 +59,7 @@ with open("IMDB_files_link/_filtered_data/language.filtered") as data_file:
                 or language == "English(United States)" \
                 or language == "English(original text)" \
                 or language == "English	(English Version)":
-            pass
+            break
         else:
             movies.pop(title, None)
 
@@ -257,3 +268,7 @@ for title in movies.keys():
         movies.pop(title, None)
 
 print len(movies), "amount of movies that have stated business values"
+print movies["Avatar (2009)"]
+######################################################
+#                business filtering
+######################################################
