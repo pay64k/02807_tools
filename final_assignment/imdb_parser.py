@@ -4,7 +4,7 @@ import unicodedata
 
 def find_all():
     names = []
-    for num in range(0,199):
+    for num in range(0,200):
         file = open("IMDB_files_link/imdb_scrap_more_raw/"+str(num))
         soup = BeautifulSoup(file, 'html.parser')
         for table in soup.find_all('table'):

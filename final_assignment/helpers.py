@@ -288,3 +288,28 @@ def stacksize(since=0.0):
 #         all_actors[name]=rank
 # print all_actors
 # print len(all_actors)
+
+# top_actors = {}
+#
+# with open("IMDB_files_link/_filtered_data/actors.scrapped") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for rank, name in enumerate(reader):
+#         _name = name[0]
+#         if _name not in top_actors:
+#             top_actors[_name] = {"rank": rank}
+
+top_actors = {}
+
+with open("IMDB_files_link/_filtered_data/actors.scrapped") as data_file:
+    reader = csv.reader(data_file, delimiter='\n')
+    for rank, name in enumerate(reader):
+        _name = name[0]
+        if _name not in top_actors:
+            top_actors[_name] = {"rank": rank+1}
+
+
+print top_actors["Evan Rachel Wood"]
+print top_actors["Amy Adams"]
+print top_actors["Jana Kramer"]
+print top_actors["Nadine Garner"]
+print "\t", len(top_actors), "top actors found"
