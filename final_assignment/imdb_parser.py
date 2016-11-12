@@ -1,20 +1,27 @@
 from bs4 import BeautifulSoup
+import unicodedata
 
 
-file = open("IMDB_files_link/imdb_scrap/1")
+def find_all():
+    names = []
+    for num in range(1,2001,50):
+        file = open("IMDB_files_link/imdb_scrap/"+str(num))
+        soup = BeautifulSoup(file, 'html.parser')
+        for table in soup.find_all('table'):
+            table_name = str(table.get('class')[0])
+            if table_name == "results":
+                all_imgs =  table.find_all('img')
+                for img in all_imgs:
+                    name = img.get('alt')
+                    names.append(name)
+    all_names_ascii = []
+    for name in names:
+        all_names_ascii.append(unicodedata.normalize('NFKD', name).encode('ascii', 'ignore'))
+    return all_names_ascii
 
-soup = BeautifulSoup(file, 'html.parser')
+f = open('actors_imdb','w')
+names = find_all()
+for name in names:
+    f.write(name + "\n")
 
-# print(soup.prettify())
-names = set()
-for link in soup.find_all('a'):
-    name = link.get('title')
-    names.add(name)
-
-good_names = set()
-for bla in names:
-    # print str(bla).join("")
-    if "IMDb" not in str(bla).join(""):
-        good_names.add(bla)
-
-print len(names)
+f.close()

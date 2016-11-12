@@ -276,15 +276,15 @@ def stacksize(since=0.0):
 
 # print len(movie_business), "amount of movies that have stated business values"
 
-all_actors = {}
-
-with open("IMDB_files_link/_filtered_data/top_1000.filtered") as data_file:
-    reader = csv.reader(data_file, delimiter=',')
-    for line in reader:
-        rank = line[0]
-        name = line[5]
-        print line
-        print rank, name
-        all_actors[name]=rank
-print all_actors
-print len(all_actors)
+# all_actors = {}
+#
+# with open("IMDB_files_link/_filtered_data/top_1000.filtered") as data_file:
+#     reader = csv.reader(data_file, delimiter=',')
+#     for line in reader:
+#         rank = line[0]
+#         name = line[5]
+#         print line
+#         print rank, name
+#         all_actors[name]=rank
+# print all_actors
+# print len(all_actors)

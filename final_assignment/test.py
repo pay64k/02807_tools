@@ -1,4 +1,5 @@
 import csv, helpers
+import imdb_parser
 
 movies ={}
 movies_amount = 0
@@ -272,3 +273,10 @@ print len(movies), "amount of movies that have stated business values"
 ######################################################
 #                actors filtering
 ######################################################
+
+top_actors = imdb_parser.find_all()
+
+print "\t", len(top_actors), "top actors found"
+
+
+
