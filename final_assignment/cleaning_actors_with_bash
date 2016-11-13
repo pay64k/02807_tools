@@ -13,3 +13,30 @@ sed "s/\t\t//g" _filtered_data/actresses.filtered.2 > _filtered_data/actresses.f
 sed "s/\t/\n/g" _filtered_data/actresses.filtered.3 > _filtered_data/actresses.filtered.4;
 sed '/"/d' _filtered_data/actresses.filtered.4 >_filtered_data/actresses.filtered.finished;
 cat -s _filtered_data/actresses.filtered.finished > _filtered_data/actresses.filtered
+
+
+sed "s/\t\t/\t/g" actors.short.list > temp
+sed "s/\t\t/\t/g" temp > temp2
+sed "s/\b\t/\n/g" temp2 > temp3
+sed "s/\t//g" temp3 > temp4
+
+sed "s/\t\t/\t/g" actors.short.list > temp.tmp
+sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
+sed "s/\b\t/\n/g" temp2.tmp > temp3.tmp
+sed "s/\t//g" temp3.tmp > temp4.tmp
+sed '/"/d' temp4.tmp > temp5.tmp
+
+------------
+
+sed "s/\t\t/\t/g" actors.list > temp.tmp
+sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
+sed "s/\b\t/\n/g" temp2.tmp > temp3.tmp
+sed "s/\t//g" temp3.tmp > temp4.tmp
+sed '/"/d' temp4.tmp >_filtered_data/actors.filtered
+
+sed "s/\t\t/\t/g" actresses.list > temp.tmp
+sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
+sed "s/\b\t/\n/g" temp2.tmp > temp3.tmp
+sed "s/\t//g" temp3.tmp > temp4.tmp
+sed '/"/d' temp4.tmp >_filtered_data/actresses.filtered
+rm *.tmp

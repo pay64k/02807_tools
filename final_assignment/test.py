@@ -281,9 +281,8 @@ with open("IMDB_files_link/_filtered_data/actors.scrapped") as data_file:
     for rank, name in enumerate(reader):
         _name = name[0]
         if _name not in top_actors:
-            top_actors[_name] = {"rank": rank}
+            top_actors[_name] = {"rank": rank+1}
 
-print "\t", len(top_actors), "top actors found"
 
 
 

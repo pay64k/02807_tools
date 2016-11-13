@@ -298,18 +298,58 @@ def stacksize(since=0.0):
 #         if _name not in top_actors:
 #             top_actors[_name] = {"rank": rank}
 
-top_actors = {}
+# top_actors = {}
+#
+# with open("IMDB_files_link/_filtered_data/actors.scrapped") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for rank, name in enumerate(reader):
+#         _name = name[0]
+#         if _name not in top_actors:
+#             top_actors[_name] = {"rank": rank+1}
 
-with open("IMDB_files_link/_filtered_data/actors.scrapped") as data_file:
+
+# print top_actors["Evan Rachel Wood"]
+# print top_actors["Amy Adams"]
+# print top_actors["Jana Kramer"]
+# print top_actors["Nadine Garner"]
+# print "\t", len(top_actors), "top actors found"
+
+actors_raw = []
+c=0
+with open("IMDB_files_link/_filtered_data/actors.filtered") as data_file:
     reader = csv.reader(data_file, delimiter='\n')
-    for rank, name in enumerate(reader):
-        _name = name[0]
-        if _name not in top_actors:
-            top_actors[_name] = {"rank": rank+1}
+    for line in reader:
+        c+=1
+        full_line = " ".join(line)
+        actors_raw.append(full_line)
+        # if c >=100: break
 
+actors_less_raw = []
 
-print top_actors["Evan Rachel Wood"]
-print top_actors["Amy Adams"]
-print top_actors["Jana Kramer"]
-print top_actors["Nadine Garner"]
-print "\t", len(top_actors), "top actors found"
+temp = []
+for line in actors_raw:
+    if line != "":
+        temp.append(line)
+    else:
+        # only add actors that have roles listed
+        if len(temp) > 1:
+            actors_less_raw.append(temp)
+        temp = []
+
+movie_and_roles = {}
+
+for entry in actors_less_raw[:1000]:
+    actor = entry[0]
+    if "," in actor:
+        parted = actor.partition(", ")
+        # first name then surname
+        actor = parted[2] + " " + parted[0]
+    for role in entry[1:len(entry)]:
+        movie_name = role.partition("  ")[0]
+        if movie_name not in movie_and_roles:
+            movie_and_roles[movie_name] = {"cast":[actor]}
+        else:
+            movie_and_roles[movie_name]["cast"].append(actor)
+
+for line in movie_and_roles:
+    print line, movie_and_roles[line]
