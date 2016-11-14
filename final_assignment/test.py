@@ -367,16 +367,33 @@ for title in movies.keys():
     if "cast" not in movies[title]:
         movies.pop(title, None)
     else:
-        if len(movies[title]["cast"]) < 4:
+        if len(movies[title]["cast"]) < 3:
             movies.pop(title, None)
 
-print len(movies), "amount of movies after adding cast and with cast bigger then 4 actors"
+print len(movies), "amount of movies after adding cast and with cast bigger then 3 actors"
 
 top_cast = []
 
 for title in movies:
     cast = movies[title]["cast"]
-    if len(cast) >= 4:
+    if len(cast) >= 3:
         for actor in cast:
             if actor in top_actors:
-                rank = top_actors[actor]
+                rank = top_actors[actor]["rank"]
+                top_cast.append({"actor": actor, "rank": rank})
+        movies[title]["cast"] = top_cast
+        top_cast=[]
+
+for title in movies:
+    cast = movies[title]["cast"]
+    cast_sorted = sorted(cast, key=lambda k: k['rank'])
+    cast_sorted = cast_sorted[:3]
+    movies[title]["cast"] = cast_sorted
+
+for title in movies.keys():
+    if len(movies[title]["cast"]) < 3:
+        movies.pop(title, None)
+
+print len(movies), "amount of movies after adding cast and with 3 actors listed in top list"
+
+del top_cast, top_actors, movie_and_roles, cast_sorted
