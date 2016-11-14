@@ -1,42 +1,13 @@
-
-sed "s/\t\t/\t/g" actors.list > _filtered_data/actors.filtered
-sed "s/\b\t\b/\n/g" _filtered_data/actors.filtered > _filtered_data/actors.filtered.2
-sed "s/\t\t//g" _filtered_data/actors.filtered.2 > _filtered_data/actors.filtered.3
-sed "s/\t/\n/g" _filtered_data/actors.filtered.3 > _filtered_data/actors.filtered.4
-sed '/"/d' _filtered_data/actors.filtered.4 >_filtered_data/actors.filtered.finished
-cat -s _filtered_data/actors.filtered.finished > _filtered_data/actors.filtered
-
-
-sed "s/\t\t/\t/g" actresses.list > _filtered_data/actresses.filtered;
-sed "s/\b\t\b/\n/g" _filtered_data/actresses.filtered > _filtered_data/actresses.filtered.2;
-sed "s/\t\t//g" _filtered_data/actresses.filtered.2 > _filtered_data/actresses.filtered.3;
-sed "s/\t/\n/g" _filtered_data/actresses.filtered.3 > _filtered_data/actresses.filtered.4;
-sed '/"/d' _filtered_data/actresses.filtered.4 >_filtered_data/actresses.filtered.finished;
-cat -s _filtered_data/actresses.filtered.finished > _filtered_data/actresses.filtered
-
-
-sed "s/\t\t/\t/g" actors.short.list > temp
-sed "s/\t\t/\t/g" temp > temp2
-sed "s/\b\t/\n/g" temp2 > temp3
-sed "s/\t//g" temp3 > temp4
-
-sed "s/\t\t/\t/g" actors.short.list > temp.tmp
-sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
-sed "s/\b\t/\n/g" temp2.tmp > temp3.tmp
-sed "s/\t//g" temp3.tmp > temp4.tmp
-sed '/"/d' temp4.tmp > temp5.tmp
-
-------------
-
 sed "s/\t\t/\t/g" actors.list > temp.tmp
 sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
-sed "s/\b\t/\n/g" temp2.tmp > temp3.tmp
+perl -p -e "s/(?<=\S)\t/\n/g" temp2.tmp > temp3.tmp
 sed "s/\t//g" temp3.tmp > temp4.tmp
-sed '/"/d' temp4.tmp >_filtered_data/actors.filtered
+sed '/"/d' temp4.tmp > temp5.tmp
+cat -s temp5.tmp > _filtered_data/actors.filtered
 
 sed "s/\t\t/\t/g" actresses.list > temp.tmp
 sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
-sed "s/\b\t/\n/g" temp2.tmp > temp3.tmp
+perl -p -e "s/(?<=\S)\t/\n/g" temp2.tmp > temp3.tmp
 sed "s/\t//g" temp3.tmp > temp4.tmp
-sed '/"/d' temp4.tmp >_filtered_data/actresses.filtered
-rm *.tmp
+sed '/"/d' temp4.tmp > temp5.tmp
+cat -s temp5.tmp > _filtered_data/actresses.filtered
