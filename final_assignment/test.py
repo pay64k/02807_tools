@@ -476,6 +476,48 @@ for title in movies.keys():
 print len(movies), "amount of movies after adding cast and with 3 actors listed in top list"
 
 del top_cast, top_actors, movie_and_roles
+######################################################
+#                   plot adding
+######################################################
+
+plot_raw = []
+
+with open("IMDB_files_link/_filtered_data/plot.filtered") as data_file:
+    reader = csv.reader(data_file, delimiter='\n')
+    for line in reader:
+        full_line = " ".join(line)
+        plot_raw.append(full_line)
+
+plot_less_raw = []
+temp = []
+for line in plot_raw:
+    if line != "----":
+        temp.append(line)
+    else:
+        plot_less_raw.append(temp)
+        temp = []
+
+movie_plots = {}
+one_plot = []
+for entry in plot_less_raw:
+    for line in entry:
+        if "MV" in line:
+            title = line.partition("MV: ")[2]
+        if "PL" in line:
+            one_plot.append(line.partition("PL: ")[2])
+        if "BY" in line:
+            movie_plots[title] = {"plot": " ".join(one_plot)}
+            one_plot = []
+            break
+
+for title in movies:
+    if title in movie_plots:
+        movies[title].update({"plot": movie_plots[title]["plot"]})
+    else:
+        # print "no plot for:", title
+        movies[title].update({"plot": "plot_missing"})
+
+del movie_plots, one_plot, plot_less_raw, plot_raw
 
 print movies["Avatar (2009)"]
 print movies["The Last Temptation of Christ (1988)"]

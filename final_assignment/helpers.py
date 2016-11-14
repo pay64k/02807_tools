@@ -488,3 +488,34 @@ def stacksize(since=0.0):
 #     print title, movies[title]["gross"]
 #     c+=1
 #     if c >=100:break
+
+
+# plot_raw = []
+#
+# with open("IMDB_files_link/_filtered_data/plots.short") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for line in reader:
+#         full_line = " ".join(line)
+#         plot_raw.append(full_line)
+#
+# plot_less_raw = []
+# temp = []
+# for line in plot_raw:
+#     if line != "----":
+#         temp.append(line)
+#     else:
+#         plot_less_raw.append(temp)
+#         temp = []
+#
+# movie_plots = {}
+# one_plot = []
+# for entry in plot_less_raw:
+#     for line in entry:
+#         if "MV" in line:
+#             title = line.partition("MV: ")[2]
+#         if "PL" in line:
+#             one_plot.append(line.partition("PL: ")[2])
+#         if "BY" in line:
+#             movie_plots[title] = {"plot": " ".join(one_plot)}
+#             one_plot = []
+#             break
