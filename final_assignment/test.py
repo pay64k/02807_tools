@@ -101,56 +101,90 @@ print len(movies), "amount of movies that have rating"
 #               director filtering
 ######################################################
 
-directors_raw = []
+# directors_raw = []
+#
+# with open("IMDB_files_link/_filtered_data/directors.filtered.new") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for line in reader:
+#         full_line = " ".join(line)
+#         directors_raw.append(full_line)
+#
+# directors_less_raw = []
+# temp = []
+# for line in directors_raw:
+#     # each director is separated by new line character, in our case its an empty list of strings
+#     if line != "":
+#         temp.append(line)
+#     else:
+#         directors_less_raw.append(temp)
+#         temp = []
+#
+# movie_and_its_director = {}
+#
+# for line in directors_less_raw:
+#     # first element is always director \t\t movie or director \t movie
+#     # if a director has only one movie
+#     if len(line) <= 1:
+#         # for example: ["'Kid Niagara' Kallet, Harry\tDrug Demon Romance (2012)  (co-director)"]
+#         full_line = " ".join(line)
+#         parted = full_line.partition("\t")
+#         director = parted[0]
+#         title = parted[2].replace("\t", "")
+#         title_parted = title.partition("  ")[0]
+#         movie_and_its_director[title_parted] = {"director": director}
+#     else:
+#         # for example: ["'t Hooft, Albert\tFallin' Floyd (2013)", '\t\tLittle Quentin (2010)',
+#         #  '\t\tTrippel Trappel Dierensinterklaas (2014)']
+#         first_line = line[0]
+#         parted = first_line.partition("\t")
+#         director = parted[0]
+#         title_first = parted[2].replace("\t", "")
+#         # we want to separate the title from the rest because imdb tends to add
+#         # extra info in the parathesis after the actual title
+#         # for example: Electric Shades of Grey (2001) (V)  (uncredited)
+#         # fortunately its separated by two white spaces after the actual title
+#         title_parted = title_first.partition("  ")[0]
+#         all_dir_movies = [title_parted]
+#         for remaining_title in line[1:len(line)]:
+#             remaining_title = remaining_title.replace("\t", "")
+#             title_parted = remaining_title.partition("  ")[0]
+#             all_dir_movies.append(title_parted)
+#         for title in all_dir_movies:
+#             movie_and_its_director[title] = {"director": director}
 
-with open("IMDB_files_link/_filtered_data/directors.filtered.new") as data_file:
+actors_raw = []
+with open("IMDB_files_link/_filtered_data/actors.filtered") as data_file:
     reader = csv.reader(data_file, delimiter='\n')
     for line in reader:
         full_line = " ".join(line)
-        directors_raw.append(full_line)
+        actors_raw.append(full_line)
 
-directors_less_raw = []
+actors_less_raw = []
+
 temp = []
-for line in directors_raw:
-    # each director is separated by new line character, in our case its an empty list of strings
+for line in actors_raw:
     if line != "":
         temp.append(line)
     else:
-        directors_less_raw.append(temp)
+        # only add actors that have roles listed
+        if len(temp) > 1:
+            actors_less_raw.append(temp)
         temp = []
 
-movie_and_its_director = {}
+movie_and_roles = {}
 
-for line in directors_less_raw:
-    # first element is always director \t\t movie or director \t movie
-    # if a director has only one movie
-    if len(line) <= 1:
-        # for example: ["'Kid Niagara' Kallet, Harry\tDrug Demon Romance (2012)  (co-director)"]
-        full_line = " ".join(line)
-        parted = full_line.partition("\t")
-        director = parted[0]
-        title = parted[2].replace("\t", "")
-        title_parted = title.partition("  ")[0]
-        movie_and_its_director[title_parted] = {"director": director}
-    else:
-        # for example: ["'t Hooft, Albert\tFallin' Floyd (2013)", '\t\tLittle Quentin (2010)',
-        #  '\t\tTrippel Trappel Dierensinterklaas (2014)']
-        first_line = line[0]
-        parted = first_line.partition("\t")
-        director = parted[0]
-        title_first = parted[2].replace("\t", "")
-        # we want to separate the title from the rest because imdb tends to add
-        # extra info in the parathesis after the actual title
-        # for example: Electric Shades of Grey (2001) (V)  (uncredited)
-        # fortunately its separated by two white spaces after the actual title
-        title_parted = title_first.partition("  ")[0]
-        all_dir_movies = [title_parted]
-        for remaining_title in line[1:len(line)]:
-            remaining_title = remaining_title.replace("\t", "")
-            title_parted = remaining_title.partition("  ")[0]
-            all_dir_movies.append(title_parted)
-        for title in all_dir_movies:
-            movie_and_its_director[title] = {"director": director}
+for entry in actors_less_raw:
+    actor = entry[0]
+    if "," in actor:
+        parted = actor.partition(", ")
+        # first name then surname
+        actor = parted[2] + " " + parted[0]
+    for role in entry[1:len(entry)]:
+        movie_name = role.partition("  ")[0]
+        if movie_name not in movie_and_roles:
+            movie_and_roles[movie_name] = {"cast":[actor]}
+        else:
+            movie_and_roles[movie_name]["cast"].append(actor)
 
 for title in movie_and_its_director:
     if title in movies:
@@ -270,6 +304,7 @@ for title in movies.keys():
 small_wide_temp = []
 big_wide_temp = []
 usa_temp = []
+other_temp = []
 
 for title in movies:
     all_gross = movies[title]["gross"]
@@ -289,7 +324,7 @@ for title in movies:
                     gross_temp = gross_temp.partition(" ")[2]
                     gross_temp = gross_temp.replace(",","")
                     small_wide_temp.append(int(gross_temp))
-            if "(Worldwide)" in gross:
+            elif "(Worldwide)" in gross:
                 gross_temp = gross.partition(" (Worldwide)")[0]
                 if "GBP" in gross_temp:
                     gross_temp = gross_temp.partition("GBP ")[2]
@@ -303,7 +338,7 @@ for title in movies:
                     gross_temp = gross_temp.partition(" ")[2]
                     gross_temp = gross_temp.replace(",","")
                     big_wide_temp.append(int(gross_temp))
-            if "(USA)" in gross:
+            elif "(USA)" in gross:
                 gross_temp = gross.partition(" (USA)")[0]
                 if "GBP" in gross_temp:
                     gross_temp = gross_temp.partition("GBP ")[2]
@@ -317,19 +352,30 @@ for title in movies:
                     gross_temp = gross_temp.partition(" ")[2]
                     gross_temp = gross_temp.replace(",","")
                     usa_temp.append(int(gross_temp))
+            else:
+                gross_temp = gross.partition(" ")[2]
+                gross_temp = gross_temp.partition(" ")[0]
+                gross_temp = gross_temp.replace(",", "")
+                other_temp.append(int(gross_temp))
         except:
             print "ERROR\n", title, "\n", gross
+            movies[title]["gross"] = "no_info"
+
     if len(small_wide_temp) > 0:
         movies[title]["gross"] = max(small_wide_temp)
     elif len(big_wide_temp) > 0:
         movies[title]["gross"] = max(big_wide_temp)
     elif len(usa_temp) > 0:
         movies[title]["gross"] = max(usa_temp)
+    elif len(other_temp) > 0:
+        movies[title]["gross"] = max(other_temp)
     else:
         movies[title]["gross"] = "no_info"
+
     small_wide_temp = []
     big_wide_temp = []
     usa_temp = []
+    other_temp = []
 
 budget_temp = []
 for title in movies:
@@ -519,7 +565,7 @@ for title in movies:
         movies[title].update({"plot": movie_plots[title]["plot"]})
     else:
         # print "no plot for:", title
-        movies[title].update({"plot": "no_plot"})
+        movies[title].update({"plot": "no_info"})
 
 del movie_plots, one_plot, plot_less_raw, plot_raw
 
@@ -550,7 +596,7 @@ for title in movies:
         movies[title].update({"run-time": runtimes[title]["runtime"]})
     else:
         print "no runtime for:", title
-        movies[title].update({"run-time": "no_runtime"})
+        movies[title].update({"run-time": "no_info"})
 
 # add video game filtering
 
@@ -560,9 +606,7 @@ for title in movies.keys():
 
 print len(movies), "amount of movies after removing successful video games"
 
-print movies["Avatar (2009)"]
-print movies["The Last Temptation of Christ (1988)"]
-print movies["Pirates of the Caribbean: On Stranger Tides (2011)"]
+print movies["Decoys (2004)"]
 
 f = open('myfile','w')
 
