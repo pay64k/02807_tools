@@ -334,15 +334,19 @@ for title in movies:
 budget_temp = []
 for title in movies:
     budgetes = movies[title]["budget"]
-    if len(budgetes) > 1:
+    if len(budgetes) >= 1:
         # print "UNCOORREC", title, budgetes
         for bud in budgetes:
             if bud != "":
                 bud_temp = bud.partition(" ")[2]
                 bud_temp = bud_temp.partition(" ")[0]
                 bud_temp = bud_temp.replace(",","")
+                bud_temp = bud_temp.replace(" ","")
                 budget_temp.append(int(bud_temp))
-        movies[title]["budget"] = max(budget_temp)
+        if len(budget_temp) <= 0:
+            movies[title]["budget"] = "no_info"
+        else:
+            movies[title]["budget"] = max(budget_temp)
         # print "COORECTED", title, max(budget_temp)
         budget_temp = []
 
@@ -515,7 +519,7 @@ for title in movies:
         movies[title].update({"plot": movie_plots[title]["plot"]})
     else:
         # print "no plot for:", title
-        movies[title].update({"plot": "plot_missing"})
+        movies[title].update({"plot": "no_plot"})
 
 del movie_plots, one_plot, plot_less_raw, plot_raw
 
@@ -550,28 +554,51 @@ for title in movies:
 
 # add video game filtering
 
+for title in movies.keys():
+    if "(VG)" in title:
+        movies.pop(title, None)
+
+print len(movies), "amount of movies after removing successful video games"
+
 print movies["Avatar (2009)"]
 print movies["The Last Temptation of Christ (1988)"]
 print movies["Pirates of the Caribbean: On Stranger Tides (2011)"]
 
 f = open('myfile','w')
+
+f.write("title\t" +
+        "director\t" +
+        "rating\t" +
+        "votes\t" +
+        "year\t" +
+        "genre\t" +
+        "gross\t" +
+        "budget\t" +
+        "run-time\t" +
+        "actor1\t" +
+        "actor1_rank\t"
+        "actor2\t" +
+        "actor2_rank\t"
+        "actor3\t" +
+        "actor3_rank\t"
+        "plot" + "\n"
+        )
 for title in movies:
     entry = movies[title]
-    f.write(title +"," +
-            entry["director"]   + "," +
-            entry["rating"]     + "," +
-            entry["votes"]      + "," +
-            entry["year"]       + "," +
-            entry["genre"]      + "," +
-            entry["gross"]      + "," +
-            entry["budget"]     + "," +
-            entry["run-time"]   + "," +
-            entry["cast"][0]["actor"]   + "," +
-            entry["cast"][0]["rank"] + "," +
-            entry["cast"][1]["actor"]   + "," +
-            entry["cast"][1]["rank"] + "," +
-            entry["cast"][2]["actor"]   + "," +
-            entry["cast"][2]["rank"] + "," +
-            entry["plot"]       + "," +
-            "\n")
+    f.write(title +"\t" +
+            str(entry["director"])  + "\t" +
+            str(entry["rating"])     + "\t" +
+            str(entry["votes"])      + "\t" +
+            str(entry["year"])       + "\t" +
+            str(entry["genre"])      + "\t" +
+            str(entry["gross"])      + "\t" +
+            str(entry["budget"])     + "\t" +
+            str(entry["run-time"])   + "\t" +
+            str( entry["cast"][0]["actor"])   + "\t" +
+            str(entry["cast"][0]["rank"]) + "\t" +
+            str(entry["cast"][1]["actor"])   + "\t" +
+            str(entry["cast"][1]["rank"]) + "\t" +
+            str(entry["cast"][2]["actor"])   + "\t" +
+            str(entry["cast"][2]["rank"]) + "\t" +
+            str(entry["plot"]) + "\n")
 f.close()
