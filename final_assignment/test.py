@@ -519,6 +519,59 @@ for title in movies:
 
 del movie_plots, one_plot, plot_less_raw, plot_raw
 
+######################################################
+#                   runtime adding
+######################################################
+
+runtimes = {}
+
+with open("IMDB_files_link/_filtered_data/running-times.filtered") as data_file:
+    reader = csv.reader(data_file, delimiter='\r')
+    for line in reader:
+        # line variable here is a list of strings, so we join it into one string
+        full_line = " ".join(line)
+        # partition returns 3-tuple: (part_before_delimiter, delimiter, part_after_delimiter)
+        parted = full_line.partition("\t")
+        title = parted[0]
+        # in the part_after_delimiter we delete all \t characters
+        runtime = parted[2].replace("\t","")
+        if ":" in runtime:
+            runtime = runtime.partition(":")[2]
+        if "(" in runtime:
+            runtime = runtime.partition("(")[0]
+        runtimes[title] = {"runtime": runtime}
+
+for title in movies:
+    if title in runtimes:
+        movies[title].update({"run-time": runtimes[title]["runtime"]})
+    else:
+        print "no runtime for:", title
+        movies[title].update({"run-time": "no_runtime"})
+
+# add video game filtering
+
 print movies["Avatar (2009)"]
 print movies["The Last Temptation of Christ (1988)"]
 print movies["Pirates of the Caribbean: On Stranger Tides (2011)"]
+
+f = open('myfile','w')
+for title in movies:
+    entry = movies[title]
+    f.write(title +"," +
+            entry["director"]   + "," +
+            entry["rating"]     + "," +
+            entry["votes"]      + "," +
+            entry["year"]       + "," +
+            entry["genre"]      + "," +
+            entry["gross"]      + "," +
+            entry["budget"]     + "," +
+            entry["run-time"]   + "," +
+            entry["cast"][0]["actor"]   + "," +
+            entry["cast"][0]["rank"] + "," +
+            entry["cast"][1]["actor"]   + "," +
+            entry["cast"][1]["rank"] + "," +
+            entry["cast"][2]["actor"]   + "," +
+            entry["cast"][2]["rank"] + "," +
+            entry["plot"]       + "," +
+            "\n")
+f.close()
