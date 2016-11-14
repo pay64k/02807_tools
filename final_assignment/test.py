@@ -331,10 +331,20 @@ for title in movies:
     big_wide_temp = []
     usa_temp = []
 
+budget_temp = []
 for title in movies:
-    budget = movies[title]["budget"]
-    if len(budget) > 1:
-        print title, budget
+    budgetes = movies[title]["budget"]
+    if len(budgetes) > 1:
+        # print "UNCOORREC", title, budgetes
+        for bud in budgetes:
+            if bud != "":
+                bud_temp = bud.partition(" ")[2]
+                bud_temp = bud_temp.partition(" ")[0]
+                bud_temp = bud_temp.replace(",","")
+                budget_temp.append(int(bud_temp))
+        movies[title]["budget"] = max(budget_temp)
+        # print "COORECTED", title, max(budget_temp)
+        budget_temp = []
 
 del business_raw, business_less_raw, movies_with_values, budget_temp, gross_temp, temp
 
@@ -469,3 +479,4 @@ del top_cast, top_actors, movie_and_roles
 
 print movies["Avatar (2009)"]
 print movies["The Last Temptation of Christ (1988)"]
+print movies["Pirates of the Caribbean: On Stranger Tides (2011)"]
