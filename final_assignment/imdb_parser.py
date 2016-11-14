@@ -19,9 +19,9 @@ def find_all():
         all_names_ascii.append(unicodedata.normalize('NFKD', name).encode('ascii', 'ignore'))
     return all_names_ascii
 
-f = open('IMDB_files_link/actors_scrapped','w')
-names = find_all()
-for name in names:
-    f.write(name + "\n")
-
-f.close()
+# f = open('IMDB_files_link/actors_scrapped','w')
+# names = find_all()
+# for name in names:
+#     f.write(name + "\n")
+#
+# f.close()
