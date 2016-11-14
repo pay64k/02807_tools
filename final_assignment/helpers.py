@@ -381,3 +381,110 @@ def stacksize(since=0.0):
 #             movie_and_roles[movie_name]["cast"].append(actor)
 
 # print movie_and_roles["Avatar (2009)"]
+
+# business_raw = []
+# movies = {}
+# with open("IMDB_files_link/_filtered_data/business.filtered") as data_file:
+#     reader = csv.reader(data_file, delimiter='\n')
+#     for line in reader:
+#         full_line = " ".join(line)
+#         business_raw.append(full_line)
+#
+# business_less_raw = []
+# temp = []
+# for line in business_raw:
+#     if line != "----":
+#         temp.append(line)
+#     else:
+#         business_less_raw.append(temp)
+#         temp = []
+#
+# movies_with_values = []
+# mandatory_count = 0
+# gr_count = 0
+# temp = []
+# for movie in business_less_raw:
+#     for entry in movie:
+#         if "MV" in entry:
+#             temp.append(entry)
+#             mandatory_count += 1
+#         if "BT" in entry:                     #uncomment to have movies with budget only
+#             temp.append(entry)                #comment to have movies without budget
+#             mandatory_count += 1              #
+#         if "GR" in entry:
+#             temp.append(entry)
+#             gr_count += 1
+#         # if "RT" in entry:
+#         #     temp.append(entry)
+#         #     mandatory_count += 1
+#     if mandatory_count >= 2 and gr_count > 0:   # change first condition to 2 if wanna have budget, 1 otherwise
+#         movies_with_values.append(temp)
+#     temp = []
+#     mandatory_count = 0
+#     gr_count = 0
+#
+# budget_temp = []
+# gross_temp = []
+# title = ""
+#
+# # print len(movies_with_values), "ALL movies that have stated at least budget and gross values"
+#
+# for movie in movies_with_values:
+#     for entry in movie:
+#         if "MV" in entry:
+#             title = entry.partition("MV: ")[2]
+#         if "BT" in entry:
+#             bt = entry.partition("BT: ")[2]
+#             budget_temp.append(bt)
+#         if "GR" in entry:
+#             gr = entry.partition("GR: ")[2]
+#             gross_temp.append(gr)
+#     if title != "" and title not in movies:
+#         movies[title] = ({"budget": budget_temp, "gross": gross_temp})
+#     title = ""
+#     budget_temp = []
+#     gross_temp = []
+# # print movies
+# c=0
+#
+# small_wide_temp = []
+# big_wide_temp = []
+# usa_temp = []
+#
+# for title in movies:
+#     all_gross = movies[title]["gross"]
+#     for gross in all_gross:
+#         if "(worldwide)" in gross:
+#             gross_temp = gross.partition(" (worldwide)")[0]
+#             gross_temp = gross_temp.partition("USD ")[2]
+#             gross_temp = gross_temp.replace(",","")
+#             small_wide_temp.append(int(gross_temp))
+#         if "(Wordwile)" in gross:
+#             gross_temp = gross.partition(" (Worldwide)")[0]
+#             gross_temp = gross_temp.partition("USD ")[2]
+#             gross_temp = gross_temp.replace(",","")
+#             big_wide_temp.append(int(gross_temp))
+#         if "(USA)" in gross:
+#             gross_temp = gross.partition(" (USA)")[0]
+#             gross_temp = gross_temp.partition("USD ")[2]
+#             gross_temp = gross_temp.replace(",","")
+#             usa_temp.append(int(gross_temp))
+#     if len(small_wide_temp) > 0:
+#         movies[title]["gross"] = max(small_wide_temp)
+#     elif len(big_wide_temp) > 0:
+#         movies[title]["gross"] = max(big_wide_temp)
+#     elif len(usa_temp) > 0:
+#         movies[title]["gross"] = max(usa_temp)
+#     else:
+#         movies[title]["gross"] = "no_info"
+#     small_wide_temp = []
+#     big_wide_temp = []
+#     usa_temp = []
+#     c+=1
+#     if c >=100:break
+#
+# c=0
+# for title in movies:
+#     print title, movies[title]["gross"]
+#     c+=1
+#     if c >=100:break

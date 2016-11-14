@@ -267,6 +267,40 @@ for title in movies.keys():
     if "budget" not in movies[title]:
         movies.pop(title, None)
 
+small_wide_temp = []
+big_wide_temp = []
+usa_temp = []
+
+for title in movies:
+    all_gross = movies[title]["gross"]
+    for gross in all_gross:
+        if "(worldwide)" in gross:
+            gross_temp = gross.partition(" (worldwide)")[0]
+            gross_temp = gross_temp.partition("USD ")[2]
+            gross_temp = gross_temp.replace(",","")
+            small_wide_temp.append(int(gross_temp))
+        if "(Wordwile)" in gross:
+            gross_temp = gross.partition(" (Worldwide)")[0]
+            gross_temp = gross_temp.partition("USD ")[2]
+            gross_temp = gross_temp.replace(",","")
+            big_wide_temp.append(int(gross_temp))
+        if "(USA)" in gross:
+            gross_temp = gross.partition(" (USA)")[0]
+            gross_temp = gross_temp.partition("USD ")[2]
+            gross_temp = gross_temp.replace(",","")
+            usa_temp.append(int(gross_temp))
+    if len(small_wide_temp) > 0:
+        movies[title]["gross"] = max(small_wide_temp)
+    elif len(big_wide_temp) > 0:
+        movies[title]["gross"] = max(big_wide_temp)
+    elif len(usa_temp) > 0:
+        movies[title]["gross"] = max(usa_temp)
+    else:
+        movies[title]["gross"] = "no_info"
+    small_wide_temp = []
+    big_wide_temp = []
+    usa_temp = []
+
 del business_raw, business_less_raw, movies_with_values, budget_temp, gross_temp, temp
 
 print len(movies), "amount of movies that have stated business values"
@@ -396,4 +430,6 @@ for title in movies.keys():
 
 print len(movies), "amount of movies after adding cast and with 3 actors listed in top list"
 
-del top_cast, top_actors, movie_and_roles, cast_sorted
+del top_cast, top_actors, movie_and_roles
+
+print movies["Avatar (2009)"]
