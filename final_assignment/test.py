@@ -152,43 +152,43 @@ print len(movies), "amount of movies that have rating"
 #         for title in all_dir_movies:
 #             movie_and_its_director[title] = {"director": director}
 
-actors_raw = []
-with open("IMDB_files_link/_filtered_data/actors.filtered") as data_file:
+directors_raw = []
+with open("IMDB_files_link/_filtered_data/directors.filtered") as data_file:
     reader = csv.reader(data_file, delimiter='\n')
     for line in reader:
         full_line = " ".join(line)
-        actors_raw.append(full_line)
+        directors_raw.append(full_line)
 
-actors_less_raw = []
+directors_less_raw = []
 
 temp = []
-for line in actors_raw:
+for line in directors_raw:
     if line != "":
         temp.append(line)
     else:
-        # only add actors that have roles listed
+        # only add direcotrs that have movies listed
         if len(temp) > 1:
-            actors_less_raw.append(temp)
+            directors_less_raw.append(temp)
         temp = []
 
-movie_and_roles = {}
+movie_and_its_director = {}
 
-for entry in actors_less_raw:
-    actor = entry[0]
-    if "," in actor:
-        parted = actor.partition(", ")
+for entry in directors_less_raw:
+    director = entry[0]
+    if "," in director:
+        parted = director.partition(", ")
         # first name then surname
-        actor = parted[2] + " " + parted[0]
-    for role in entry[1:len(entry)]:
-        movie_name = role.partition("  ")[0]
-        if movie_name not in movie_and_roles:
-            movie_and_roles[movie_name] = {"cast":[actor]}
+        director = parted[2] + " " + parted[0]
+    for film in entry[1:len(entry)]:
+        movie_name = film.partition("  ")[0]
+        if movie_name not in movie_and_its_director:
+            movie_and_its_director[movie_name] = {"director":[director]}
         else:
-            movie_and_roles[movie_name]["cast"].append(actor)
+            movie_and_its_director[movie_name]["director"].append(director)
 
 for title in movie_and_its_director:
     if title in movies:
-        movies[title].update({"director": movie_and_its_director[title]["director"]})
+        movies[title].update({"director": movie_and_its_director[title]["director"][0]})
 
 for title in movies.keys():
     if "director" not in movies[title]:

@@ -11,3 +11,10 @@ perl -p -e "s/(?<=\S)\t/\n/g" temp2.tmp > temp3.tmp
 sed "s/\t//g" temp3.tmp > temp4.tmp
 sed '/"/d' temp4.tmp > temp5.tmp
 cat -s temp5.tmp > _filtered_data/actresses.filtered
+
+sed "s/\t\t/\t/g" directors.list > temp.tmp
+sed "s/\t\t/\t/g" temp.tmp > temp2.tmp
+perl -p -e "s/(?<=\S)\t/\n/g" temp2.tmp > temp3.tmp
+sed "s/\t//g" temp3.tmp > temp4.tmp
+sed '/"/d' temp4.tmp > temp5.tmp
+cat -s temp5.tmp > _filtered_data/directors.filtered
