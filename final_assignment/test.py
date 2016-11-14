@@ -274,21 +274,51 @@ usa_temp = []
 for title in movies:
     all_gross = movies[title]["gross"]
     for gross in all_gross:
-        if "(worldwide)" in gross:
-            gross_temp = gross.partition(" (worldwide)")[0]
-            gross_temp = gross_temp.partition("USD ")[2]
-            gross_temp = gross_temp.replace(",","")
-            small_wide_temp.append(int(gross_temp))
-        if "(Wordwile)" in gross:
-            gross_temp = gross.partition(" (Worldwide)")[0]
-            gross_temp = gross_temp.partition("USD ")[2]
-            gross_temp = gross_temp.replace(",","")
-            big_wide_temp.append(int(gross_temp))
-        if "(USA)" in gross:
-            gross_temp = gross.partition(" (USA)")[0]
-            gross_temp = gross_temp.partition("USD ")[2]
-            gross_temp = gross_temp.replace(",","")
-            usa_temp.append(int(gross_temp))
+        try:
+            if "(worldwide)" in gross:
+                gross_temp = gross.partition(" (worldwide)")[0]
+                if "GBP" in gross_temp:
+                    gross_temp = gross_temp.partition("GBP ")[2]
+                    gross_temp = gross_temp.replace(",", "")
+                    small_wide_temp.append(int(round(int(gross_temp)*1.25, 0)))
+                elif "USD" in gross_temp:
+                    gross_temp = gross_temp.partition("USD ")[2]
+                    gross_temp = gross_temp.replace(",","")
+                    small_wide_temp.append(int(gross_temp))
+                else:
+                    gross_temp = gross_temp.partition(" ")[2]
+                    gross_temp = gross_temp.replace(",","")
+                    small_wide_temp.append(int(gross_temp))
+            if "(Worldwide)" in gross:
+                gross_temp = gross.partition(" (Worldwide)")[0]
+                if "GBP" in gross_temp:
+                    gross_temp = gross_temp.partition("GBP ")[2]
+                    gross_temp = gross_temp.replace(",", "")
+                    big_wide_temp.append(int(round(int(gross_temp)*1.25, 0)))
+                elif "USD" in gross_temp:
+                    gross_temp = gross_temp.partition("USD ")[2]
+                    gross_temp = gross_temp.replace(",","")
+                    big_wide_temp.append(int(gross_temp))
+                else:
+                    gross_temp = gross_temp.partition(" ")[2]
+                    gross_temp = gross_temp.replace(",","")
+                    big_wide_temp.append(int(gross_temp))
+            if "(USA)" in gross:
+                gross_temp = gross.partition(" (USA)")[0]
+                if "GBP" in gross_temp:
+                    gross_temp = gross_temp.partition("GBP ")[2]
+                    gross_temp = gross_temp.replace(",", "")
+                    usa_temp.append(int(round(int(gross_temp)*1.25, 0)))
+                elif "USD" in gross_temp:
+                    gross_temp = gross_temp.partition("USD ")[2]
+                    gross_temp = gross_temp.replace(",","")
+                    usa_temp.append(int(gross_temp))
+                else:
+                    gross_temp = gross_temp.partition(" ")[2]
+                    gross_temp = gross_temp.replace(",","")
+                    usa_temp.append(int(gross_temp))
+        except:
+            print "ERROR\n", title, "\n", gross
     if len(small_wide_temp) > 0:
         movies[title]["gross"] = max(small_wide_temp)
     elif len(big_wide_temp) > 0:
@@ -300,6 +330,11 @@ for title in movies:
     small_wide_temp = []
     big_wide_temp = []
     usa_temp = []
+
+for title in movies:
+    budget = movies[title]["budget"]
+    if len(budget) > 1:
+        print title, budget
 
 del business_raw, business_less_raw, movies_with_values, budget_temp, gross_temp, temp
 
@@ -433,3 +468,4 @@ print len(movies), "amount of movies after adding cast and with 3 actors listed 
 del top_cast, top_actors, movie_and_roles
 
 print movies["Avatar (2009)"]
+print movies["The Last Temptation of Christ (1988)"]
