@@ -232,7 +232,10 @@ for title in movies.keys():
         rejectes_movies.append([title,"on_genre"])
 
 print len(movies), "amount of movies that have genre"
-
+try:
+    print movies["Get Him to the Greek (2010)"]
+except:
+    print "HERE_bla2"
 # c = 0
 # for title in movies:
 #     print title, movies[title]
@@ -278,7 +281,7 @@ for movie in business_less_raw:
         # if "RT" in entry:
         #     temp.append(entry)
         #     mandatory_count += 1
-    if mandatory_count >= 2 and gr_count > 0:   # change first condition to 2 if wanna have budget, 1 otherwise
+    if mandatory_count >= 1 and gr_count > 0:   # change first condition to 2 if wanna have budget, 1 otherwise
         movies_with_values.append(temp)
     temp = []
     mandatory_count = 0
@@ -294,29 +297,37 @@ for movie in movies_with_values:
     for entry in movie:
         if "MV" in entry:
             title = entry.partition("MV: ")[2]
-        if "BT" in entry:
+        elif "BT" in entry:
             bt = entry.partition("BT: ")[2]
             budget_temp.append(bt)
-        if "GR" in entry:
+        elif "GR" in entry:
             gr = entry.partition("GR: ")[2]
             gross_temp.append(gr)
     if title != "" and title in movies:
-        movies[title].update({"budget": budget_temp, "gross": gross_temp})
+        if len(budget_temp) == 0 and movies[title]["rating"] >= 6:
+            movies[title].update({"budget": "no_info", "gross": gross_temp})
+        else:
+            movies[title].update({"budget": budget_temp, "gross": gross_temp})
     title = ""
     budget_temp = []
     gross_temp = []
 
-for title in movies.keys():
-    if "budget" not in movies[title]:
-        if movies[title]["rating"] >= 6:
-            movies[title]["budget"] = "no_info"
-        else:
-            movies.pop(title, None)
-            rejectes_movies.append([title, "on_budg"])
-#
 # for title in movies.keys():
 #     if "budget" not in movies[title]:
-#         movies.pop(title, None)
+#         if movies[title]["rating"] >= 6:
+#             movies[title]["budget"] = "no_info"
+#         else:
+#             movies.pop(title, None)
+#             rejectes_movies.append([title, "on_budg"])
+#
+for title in movies.keys():
+    if "gross" not in movies[title]:
+        movies.pop(title, None)
+
+try:
+    print movies["Get Him to the Greek (2010)"]
+except:
+    print "HERE_bla3"
 
 small_wide_temp = []
 big_wide_temp = []
@@ -375,8 +386,8 @@ for title in movies:
                 gross_temp = gross_temp.replace(",", "")
                 other_temp.append(int(gross_temp))
         except:
-            print "ERROR\n", title, "\n", gross
-            logging.exception("logger")
+            # print "ERROR\n", title, "\n", gross
+            # logging.exception("logger")
             movies[title]["gross"] = "no_info"
 
     if len(small_wide_temp) > 0:
@@ -394,11 +405,17 @@ for title in movies:
     big_wide_temp = []
     usa_temp = []
     other_temp = []
+try:
+    print movies["Get Him to the Greek (2010)"]
+except:
+    print "HERE_bla"
 
 budget_temp = []
 for title in movies:
     budgetes = movies[title]["budget"]
-    if len(budgetes) >= 1:
+    if budgetes == "no_info":
+        pass
+    elif len(budgetes) >= 1:
         # print "UNCOORREC", title, budgetes
         for bud in budgetes:
             if bud != "":
@@ -626,48 +643,50 @@ for title in movies.keys():
     if "(VG)" in title:
         movies.pop(title, None)
 
-# print len(movies), "amount of movies after removing successful video games"
+print len(movies), "amount of movies after removing successful video games"
 
-# print movies["Decoys (2004)"]
+print movies["Decoys (2004)"]
 
-# f = open('myfile','w')
-#
-# f.write("title\t" +
-#         "director\t" +
-#         "rating\t" +
-#         "votes\t" +
-#         "year\t" +
-#         "genre\t" +
-#         "gross\t" +
-#         "budget\t" +
-#         "run-time\t" +
-#         "actor1\t" +
-#         "actor1_rank\t"
-#         "actor2\t" +
-#         "actor2_rank\t"
-#         "actor3\t" +
-#         "actor3_rank\t"
-#         "plot" + "\n"
-#         )
-# for title in movies:
-#     entry = movies[title]
-#     f.write(title +"\t" +
-#             str(entry["director"])  + "\t" +
-#             str(entry["rating"])     + "\t" +
-#             str(entry["votes"])      + "\t" +
-#             str(entry["year"])       + "\t" +
-#             str(entry["genre"])      + "\t" +
-#             str(entry["gross"])      + "\t" +
-#             str(entry["budget"])     + "\t" +
-#             str(entry["run-time"])   + "\t" +
-#             str( entry["cast"][0]["actor"])   + "\t" +
-#             str(entry["cast"][0]["rank"]) + "\t" +
-#             str(entry["cast"][1]["actor"])   + "\t" +
-#             str(entry["cast"][1]["rank"]) + "\t" +
-#             str(entry["cast"][2]["actor"])   + "\t" +
-#             str(entry["cast"][2]["rank"]) + "\t" +
-#             str(entry["plot"]) + "\n")
-# f.close()
+f = open('myfile','w')
+
+f.write("title\t" +
+        "director\t" +
+        "rating\t" +
+        "votes\t" +
+        "year\t" +
+        "genre\t" +
+        "gross\t" +
+        "budget\t" +
+        "run-time\t" +
+        "actor1\t" +
+        "actor1_rank\t"
+        "actor2\t" +
+        "actor2_rank\t"
+        "actor3\t" +
+        "actor3_rank\t"
+        "plot" + "\n"
+        )
+for title in movies:
+    entry = movies[title]
+    f.write(title +"\t" +
+            str(entry["director"])  + "\t" +
+            str(entry["rating"])     + "\t" +
+            str(entry["votes"])      + "\t" +
+            str(entry["year"])       + "\t" +
+            str(entry["genre"])      + "\t" +
+            str(entry["gross"])      + "\t" +
+            str(entry["budget"])     + "\t" +
+            str(entry["run-time"])   + "\t" +
+            str( entry["cast"][0]["actor"])   + "\t" +
+            str(entry["cast"][0]["rank"]) + "\t" +
+            str(entry["cast"][1]["actor"])   + "\t" +
+            str(entry["cast"][1]["rank"]) + "\t" +
+            str(entry["cast"][2]["actor"])   + "\t" +
+            str(entry["cast"][2]["rank"]) + "\t" +
+            str(entry["plot"]) + "\n")
+f.close()
+
+print movies["Get Him to the Greek (2010)"]
 
 f = open('_rejected.movies','w')
 for entry in rejectes_movies:
