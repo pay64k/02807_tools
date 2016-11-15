@@ -519,3 +519,11 @@ def stacksize(since=0.0):
 #             movie_plots[title] = {"plot": " ".join(one_plot)}
 #             one_plot = []
 #             break
+
+wiki_budget_ok = [
+    ['$20 million', 'Disorganized Crime (1989)'],
+    ['$20 million', 'Wings of Courage (1995)'],
+    ['$12 million', 'Clean and Sober (1988)'],
+    ['$21 million', 'For Colored Girls (2010)']
+            ]
+
