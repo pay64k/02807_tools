@@ -26,7 +26,7 @@ with open('files/datasetV_20161115-181058') as csvfile:
         "actor3":       entry["actor3"],
         "actor3_rank":  entry["actor3_rank"],
         "actor3_sex":   entry["actor3_sex"],
-        "plot":  entry["plot"]
+        "plot":         entry["plot"]
         }
 # print movies["Get Him to the Greek (2010)"]
 
