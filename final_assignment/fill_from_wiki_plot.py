@@ -52,7 +52,7 @@ counter = 0
 # TODO Remove limits
 f = open('files/_additional_plot_from_wiki','a',0)
 
-for title in movies_with_no_plot[49:50]:
+for title in movies_with_no_plot:
 
     title_no_year = title[0]
     full_title = title[1]
@@ -69,23 +69,23 @@ for title in movies_with_no_plot[49:50]:
 
     search_results = [unicodedata.normalize('NFKD', x).encode('ascii','ignore') for x in search_results]
 
-    print "search_results for", title_film, search_results
+    print "search_results for\t", title_film, "\t\t" ,search_results
 
     for result in search_results:
         if compute_jaccard_index(title_film,result) >= 1:
-            print "\n-----1-----\n"
+            # print "\n-----1-----\n"
             current_query = result
             break
         elif compute_jaccard_index(title_no_year,result) >=1:
-            print "\n-----2-----\n"
+            # print "\n-----2-----\n"
             current_query = result
             break
         elif compute_jaccard_index(title_no_year,result) >=1:
-            print "\n-----3-----\n"
+            # print "\n-----3-----\n"
             current_query = result
             break
         elif compute_jaccard_index(str(title_no_year + " (" + year + " film" + ")"),result) >=1:
-            print "\n-----4-----\n"
+            # print "\n-----4-----\n"
             current_query = result
             break
         # elif "film" in result:
@@ -94,7 +94,7 @@ for title in movies_with_no_plot[49:50]:
         else:
             current_query = "no_results"
 
-    print "\tcurrent_query:", current_query , "/ for movie: ", full_title
+    print "current_query:\t\t", current_query , "/ for movie: ", full_title
 
     if current_query != "no_results":
         try:
@@ -107,7 +107,7 @@ for title in movies_with_no_plot[49:50]:
         if go_flag:
             section_results = [unicodedata.normalize('NFKD', x).encode('ascii','ignore') for x in movie_page.sections]
             f.write(str(full_title + "\t" + current_query + "\t" + str(search_results) + "\n"))
-            print "sections for", current_query, section_results, "\n"
+            print "sections for\t\t", current_query, section_results, "\n"
 
     else:
         wiki_no_plot.append(["no_info_query", full_title])
