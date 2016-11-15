@@ -235,10 +235,10 @@ for title in movies.keys():
         rejectes_movies.append([title,"on_genre"])
 
 print len(movies), "amount of movies that have genre"
-try:
-    print movies["Get Him to the Greek (2010)"]
-except:
-    print "HERE_bla2"
+# try:
+#     print movies["Get Him to the Greek (2010)"]
+# except:
+#     print "HERE_bla2"
 # c = 0
 # for title in movies:
 #     print title, movies[title]
@@ -327,10 +327,10 @@ for title in movies.keys():
     if "gross" not in movies[title]:
         movies.pop(title, None)
 
-try:
-    print movies["Get Him to the Greek (2010)"]
-except:
-    print "HERE_bla3"
+# try:
+#     print movies["Get Him to the Greek (2010)"]
+# except:
+#     print "HERE_bla3"
 
 small_wide_temp = []
 big_wide_temp = []
@@ -408,10 +408,10 @@ for title in movies:
     big_wide_temp = []
     usa_temp = []
     other_temp = []
-try:
-    print movies["Get Him to the Greek (2010)"]
-except:
-    print "HERE_bla"
+# try:
+#     print movies["Get Him to the Greek (2010)"]
+# except:
+#     print "HERE_bla"
 
 budget_temp = []
 for title in movies:
@@ -484,9 +484,9 @@ for entry in actors_less_raw:
     for role in entry[1:len(entry)]:
         movie_name = role.partition("  ")[0]
         if movie_name not in movie_and_roles:
-            movie_and_roles[movie_name] = {"cast":[actor]}
+            movie_and_roles[movie_name] = {"cast":[{"actor":actor,"sex": "M"}]}
         else:
-            movie_and_roles[movie_name]["cast"].append(actor)
+            movie_and_roles[movie_name]["cast"].append({"actor":actor,"sex": "M"})
 
 actors_raw = []
 with open("IMDB_files_link/_filtered_data/actresses.filtered") as data_file:
@@ -516,9 +516,9 @@ for entry in actors_less_raw:
     for role in entry[1:len(entry)]:
         movie_name = role.partition("  ")[0]
         if movie_name not in movie_and_roles:
-            movie_and_roles[movie_name] = {"cast":[actor]}
+            movie_and_roles[movie_name] = {"cast":[{"actor":actor,"sex": "F"}]}
         else:
-            movie_and_roles[movie_name]["cast"].append(actor)
+            movie_and_roles[movie_name]["cast"].append({"actor":actor,"sex": "F"})
 
 del actors_less_raw, actors_raw, temp
 
@@ -539,17 +539,18 @@ for title in movies.keys():
             movies.pop(title, None)
             rejectes_movies.append([title, "on_cast_<_3"])
 
-print len(movies), "amount of movies after adding cast and with cast bigger then 3 actors"
+print len(movies), "amount of movies that have cast specified and with cast bigger then 3 actors"
 
 top_cast = []
 
 for title in movies:
     cast = movies[title]["cast"]
     if len(cast) >= 3:
-        for actor in cast:
+        for actor_entry in cast:
+            actor = actor_entry["actor"]
             if actor in top_actors:
                 rank = top_actors[actor]["rank"]
-                top_cast.append({"actor": actor, "rank": rank})
+                top_cast.append({"actor": actor, "rank": rank, "sex": actor_entry["sex"]})
         movies[title]["cast"] = top_cast
         top_cast=[]
 
@@ -637,7 +638,7 @@ for title in movies:
     if title in runtimes:
         movies[title].update({"run-time": runtimes[title]["runtime"]})
     else:
-        print "no runtime for:", title
+        # print "no runtime for:", title
         movies[title].update({"run-time": "no_info"})
 
 # add video game filtering - only CoD: Modern Warfare 2
@@ -647,8 +648,6 @@ for title in movies.keys():
         movies.pop(title, None)
 
 print len(movies), "amount of movies after removing successful video games"
-
-print movies["Decoys (2004)"]
 
 f = open('files/datasetV_' + str(time.strftime("%Y%m%d-%H%M%S")),'w')
 
@@ -663,10 +662,13 @@ f.write("title\t" +
         "run-time\t" +
         "actor1\t" +
         "actor1_rank\t"
+        "actor1_sex\t"
         "actor2\t" +
-        "actor2_rank\t"
+        "actor2_rank\t" +
+        "actor2_sex\t" +
         "actor3\t" +
-        "actor3_rank\t"
+        "actor3_rank\t" +
+        "actor3_sex\t" +
         "plot" + "\n"
         )
 for title in movies:
@@ -682,16 +684,19 @@ for title in movies:
             str(entry["run-time"])   + "\t" +
             str( entry["cast"][0]["actor"])   + "\t" +
             str(entry["cast"][0]["rank"]) + "\t" +
+            str(entry["cast"][0]["sex"]) + "\t" +
             str(entry["cast"][1]["actor"])   + "\t" +
             str(entry["cast"][1]["rank"]) + "\t" +
+            str(entry["cast"][1]["sex"]) + "\t" +
             str(entry["cast"][2]["actor"])   + "\t" +
             str(entry["cast"][2]["rank"]) + "\t" +
+            str(entry["cast"][2]["sex"]) + "\t" +
             str(entry["plot"]) + "\n")
 f.close()
 
-print movies["Get Him to the Greek (2010)"]
+# print movies["Get Him to the Greek (2010)"]
 
-f = open('files/_rejected.movies','w')
-for entry in rejectes_movies:
-    f.write(str(entry)+"\n")
-f.close()
+# f = open('files/_rejected.movies','w')
+# for entry in rejectes_movies:
+#     f.write(str(entry)+"\n")
+# f.close()
