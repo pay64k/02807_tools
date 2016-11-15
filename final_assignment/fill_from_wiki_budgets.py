@@ -1,4 +1,5 @@
 import csv, wikipedia, unicodedata, wptools
+import time
 
 movies = {}
 
@@ -70,8 +71,11 @@ for title in movies_with_no_budget:
     # print "\tcurrent_query:", current_query , "/ for movie: ", full_title
 
     if current_query != "no_results":
-
-        movie_page = wptools.page(current_query,silent=True).get_parse()
+        try:
+            movie_page = wptools.page(current_query,silent=True).get_parse()
+        except:
+            print "error for:", current_query, " query"
+            movie_page.infobox = None
 
         if movie_page.infobox is not None:
             # print "infobox for title:", title_no_year
@@ -105,6 +109,7 @@ for title in movies_with_no_budget:
 
     else:
         wiki_no_budget.append(["no_info_query", full_title])
+
     counter += 1
     print "Done with:",counter,"/",len(movies_with_no_budget)
 
@@ -114,11 +119,13 @@ for title in movies_with_no_budget:
 print "BUDGET:\tmovies with info:", len(wiki_budget_ok), "\tmovies no info:", len(wiki_no_budget), "\tall movies with no info:", len(movies_with_no_budget)
 
 f = open('_additional_budget_from_wiki','w')
+f.write(str(time.strftime("%c")) + "\n")
+f.write("BUDGET:\tmovies with info:" + str(len(wiki_budget_ok)) + "\tmovies no info:" + str(len(wiki_no_budget)) + "\tall movies with no info:" + str(len(movies_with_no_budget)) + "\n")
 
 for entry in wiki_budget_ok:
     f.write(str(entry)+"\n")
 
-f.write("--------BLA----------" + "\n")
+f.write("--------Different budgets:---------" + "\n")
 
 for entry in list(different_budget_keys):
     f.write(str(entry)+"\n")
