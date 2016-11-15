@@ -1,4 +1,7 @@
 import csv, helpers
+
+import time
+
 import imdb_parser
 import logging
 logging.basicConfig(level=logging.ERROR)
@@ -647,7 +650,7 @@ print len(movies), "amount of movies after removing successful video games"
 
 print movies["Decoys (2004)"]
 
-f = open('myfile','w')
+f = open('files/datasetV_' + str(time.strftime("%Y%m%d-%H%M%S")),'w')
 
 f.write("title\t" +
         "director\t" +
@@ -688,7 +691,7 @@ f.close()
 
 print movies["Get Him to the Greek (2010)"]
 
-f = open('_rejected.movies','w')
+f = open('files/_rejected.movies','w')
 for entry in rejectes_movies:
     f.write(str(entry)+"\n")
 f.close()
