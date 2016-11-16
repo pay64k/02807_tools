@@ -3,7 +3,7 @@ import time
 
 movies = {}
 
-with open('files/datasetV_20161115-205709') as csvfile:
+with open('files/datasetV_20161116-203716') as csvfile:
     reader = csv.DictReader(csvfile, delimiter = "\t")
     for entry in reader:
         movies[
@@ -26,6 +26,15 @@ with open('files/datasetV_20161115-205709') as csvfile:
         "actor3":       entry["actor3"],
         "actor3_rank":  entry["actor3_rank"],
         "actor3_sex":   entry["actor3_sex"],
+        "actor4":       entry["actor4"],
+        "actor4_rank":  entry["actor4_rank"],
+        "actor4_sex":   entry["actor4_sex"],
+        "actor5":       entry["actor5"],
+        "actor5_rank":  entry["actor5_rank"],
+        "actor5_sex":   entry["actor5_sex"],
+        "actor6":       entry["actor6"],
+        "actor6_rank":  entry["actor6_rank"],
+        "actor6_sex":   entry["actor6_sex"],
         "plot":         entry["plot"]
         }
 # print movies["Get Him to the Greek (2010)"]

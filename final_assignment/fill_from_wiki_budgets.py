@@ -3,7 +3,7 @@ import time
 
 movies = {}
 
-with open('files/datasetV_20161115-181058') as csvfile:
+with open('files/datasetV_20161116-203716') as csvfile:
     reader = csv.DictReader(csvfile, delimiter = "\t")
     for entry in reader:
         movies[
@@ -26,12 +26,23 @@ with open('files/datasetV_20161115-181058') as csvfile:
         "actor3":       entry["actor3"],
         "actor3_rank":  entry["actor3_rank"],
         "actor3_sex":   entry["actor3_sex"],
+        "actor4":       entry["actor4"],
+        "actor4_rank":  entry["actor4_rank"],
+        "actor4_sex":   entry["actor4_sex"],
+        "actor5":       entry["actor5"],
+        "actor5_rank":  entry["actor5_rank"],
+        "actor5_sex":   entry["actor5_sex"],
+        "actor6":       entry["actor6"],
+        "actor6_rank":  entry["actor6_rank"],
+        "actor6_sex":   entry["actor6_sex"],
         "plot":         entry["plot"]
         }
 # print movies["Get Him to the Greek (2010)"]
 
 
 def compute_jaccard_index(list_1, list_2):
+    list_1 = list_1.replace("(","").replace(")","")
+    list_2 = list_2.replace("(","").replace(")","")
     set_1 = set(list_1.split())
     set_2 = set(list_2.split())
     return len(set_1.intersection(set_2)) / float(len(set_1.union(set_2)))
@@ -53,6 +64,10 @@ for title in movies_with_no_budget:
 
     title_no_year = title[0]
     full_title = title[1]
+    title_film = str(title_no_year + "(film)")
+    year = title[1].partition("(")[2]
+    year = year.replace("(","")
+    year = year.replace(")","")
     try:
         search_results = wikipedia.search(title_no_year)
     except:
@@ -65,12 +80,25 @@ for title in movies_with_no_budget:
     # print "search_results for", title_no_year, search_results
 
     for result in search_results:
-        if compute_jaccard_index(title_no_year,result) >= 0.9:
+        if compute_jaccard_index(title_film,result) >= 1:
+            # print "\n-----1-----\n"
             current_query = result
             break
-        if "film" in result:
+        elif compute_jaccard_index(title_no_year,result) >=1:
+            # print "\n-----2-----\n"
             current_query = result
             break
+        elif compute_jaccard_index(title_no_year,result) >=1:
+            # print "\n-----3-----\n"
+            current_query = result
+            break
+        elif compute_jaccard_index(str(title_no_year + " (" + year + " film" + ")"),result) >=1:
+            # print "\n-----4-----\n"
+            current_query = result
+            break
+        # elif "film" in result:
+        #     current_query = result
+        #     break
         else:
             current_query = "no_results"
 

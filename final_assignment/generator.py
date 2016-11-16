@@ -417,6 +417,7 @@ budget_temp = []
 for title in movies:
     budgetes = movies[title]["budget"]
     if budgetes == "no_info":
+        rejectes_movies.append([title, "on_budg"])
         pass
     elif len(budgetes) >= 1:
         # print "UNCOORREC", title, budgetes
@@ -480,7 +481,13 @@ for entry in actors_less_raw:
     if "," in actor:
         parted = actor.partition(", ")
         # first name then surname
-        actor = parted[2] + " " + parted[0]
+        # if there is (I) or else in name - delete it
+        name_with_paranth = parted[2]
+        if "(" in name_with_paranth:
+            clean_name = name_with_paranth.partition(" (")[0]
+            actor = clean_name + " " + parted[0]
+        else:
+            actor = parted[2] + " " + parted[0]
     for role in entry[1:len(entry)]:
         movie_name = role.partition("  ")[0]
         if movie_name not in movie_and_roles:
@@ -530,22 +537,24 @@ for title in movie_and_roles:
     if title in movies:
         movies[title].update({"cast": movie_and_roles[title]["cast"]})
 
+print movies["Six-String Samurai (1998)"]
+
 for title in movies.keys():
     if "cast" not in movies[title]:
         movies.pop(title, None)
         rejectes_movies.append([title,"on_cast_no_cast"])
     else:
-        if len(movies[title]["cast"]) < 3:
+        if len(movies[title]["cast"]) < 6:
             movies.pop(title, None)
-            rejectes_movies.append([title, "on_cast_<_3"])
+            rejectes_movies.append([title, "on_cast_<_6"])
 
-print len(movies), "amount of movies that have cast specified and with cast bigger then 3 actors"
+print len(movies), "amount of movies that have cast specified and with cast bigger then 6 actors"
 
 top_cast = []
 
 for title in movies:
     cast = movies[title]["cast"]
-    if len(cast) >= 3:
+    if len(cast) >= 6:
         for actor_entry in cast:
             actor = actor_entry["actor"]
             if actor in top_actors:
@@ -557,15 +566,19 @@ for title in movies:
 for title in movies:
     cast = movies[title]["cast"]
     cast_sorted = sorted(cast, key=lambda k: k['rank'])
-    cast_sorted = cast_sorted[:3]
+    cast_sorted = cast_sorted[:6]
+    # if len(cast_sorted) == 0: print title
+    # print cast_sorted
     movies[title]["cast"] = cast_sorted
 
-for title in movies.keys():
-    if len(movies[title]["cast"]) < 3:
-        movies.pop(title, None)
-        rejectes_movies.append([title, "on_cast_<_3_2"])
+print movies["Six-String Samurai (1998)"]
 
-print len(movies), "amount of movies after adding cast and with 3 actors listed in top list"
+for title in movies.keys():
+    if len(movies[title]["cast"]) < 6:
+        movies.pop(title, None)
+        rejectes_movies.append([title, "on_cast_<_6_2"])
+
+print len(movies), "amount of movies after adding cast and with 6 actors listed in top list"
 
 del top_cast, top_actors, movie_and_roles
 ######################################################
@@ -609,6 +622,7 @@ for title in movies:
     else:
         # print "no plot for:", title
         movies[title].update({"plot": "no_info"})
+        rejectes_movies.append([title, "on_plot"])
 
 del movie_plots, one_plot, plot_less_raw, plot_raw
 
@@ -669,6 +683,15 @@ f.write("title\t" +
         "actor3\t" +
         "actor3_rank\t" +
         "actor3_sex\t" +
+        "actor4\t" +
+        "actor4_rank\t" +
+        "actor4_sex\t" +
+        "actor5\t" +
+        "actor5_rank\t" +
+        "actor5_sex\t" +
+        "actor6\t" +
+        "actor6_rank\t" +
+        "actor6_sex\t" +
         "plot" + "\n"
         )
 for title in movies:
@@ -682,7 +705,7 @@ for title in movies:
             str(entry["gross"])      + "\t" +
             str(entry["budget"])     + "\t" +
             str(entry["run-time"])   + "\t" +
-            str( entry["cast"][0]["actor"])   + "\t" +
+            str(entry["cast"][0]["actor"])   + "\t" +
             str(entry["cast"][0]["rank"]) + "\t" +
             str(entry["cast"][0]["sex"]) + "\t" +
             str(entry["cast"][1]["actor"])   + "\t" +
@@ -691,12 +714,21 @@ for title in movies:
             str(entry["cast"][2]["actor"])   + "\t" +
             str(entry["cast"][2]["rank"]) + "\t" +
             str(entry["cast"][2]["sex"]) + "\t" +
+            str(entry["cast"][3]["actor"]) + "\t" +
+            str(entry["cast"][3]["rank"]) + "\t" +
+            str(entry["cast"][3]["sex"]) + "\t" +
+            str(entry["cast"][4]["actor"]) + "\t" +
+            str(entry["cast"][4]["rank"]) + "\t" +
+            str(entry["cast"][4]["sex"]) + "\t" +
+            str(entry["cast"][5]["actor"]) + "\t" +
+            str(entry["cast"][5]["rank"]) + "\t" +
+            str(entry["cast"][5]["sex"]) + "\t" +
             str(entry["plot"]) + "\n")
 f.close()
-
+#
 # print movies["Get Him to the Greek (2010)"]
 
-# f = open('files/_rejected.movies','w')
-# for entry in rejectes_movies:
-#     f.write(str(entry)+"\n")
-# f.close()
+f = open('files/_rejected.movies','w')
+for entry in rejectes_movies:
+    f.write(str(entry)+"\n")
+f.close()
