@@ -3,10 +3,10 @@ import file_save_load as fsl
 import time
 
 
-fileName = 'datasetV_20161118-094337'
-actors_amount = 3
+fileName = 'imdb_dataset_v7_no_plots'
+actors_amount = 6
 
-movies = fsl.read_from_file(fileName, 3)
+movies = fsl.read_from_file(fileName, actors_amount)
 # with open('files/datasetV_20161116-203716') as csvfile:
 #     reader = csv.DictReader(csvfile, delimiter = "\t")
 #     for entry in reader:

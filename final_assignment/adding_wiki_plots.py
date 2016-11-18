@@ -6,9 +6,9 @@ import file_save_load as fsl
 #               adding new budgets
 ######################################################
 
-fileNameDataset = 'datasetV_20161118-094337'
+fileNameDataset = 'imdb_dataset_v7_no_plots'
 fileNameBudgets = '_wiki_plot_for_' + fileNameDataset
-actors_amount = 3
+actors_amount = 6
 
 movies = fsl.read_from_file(fileNameDataset, actors_amount)
 
