@@ -1,12 +1,12 @@
 import csv, helpers
-
 import time
-
 import imdb_parser
-import logging
-logging.basicConfig(level=logging.ERROR)
+import file_save_load as fsl
+
 movies ={}
 movies_amount = 0
+
+actors_amount = 3
 
 rejectes_movies = []
 
@@ -544,17 +544,17 @@ for title in movies.keys():
         movies.pop(title, None)
         rejectes_movies.append([title,"on_cast_no_cast"])
     else:
-        if len(movies[title]["cast"]) < 6:
+        if len(movies[title]["cast"]) < actors_amount:
             movies.pop(title, None)
             rejectes_movies.append([title, "on_cast_<_6"])
 
-print len(movies), "amount of movies that have cast specified and with cast bigger then 6 actors"
+print len(movies), "amount of movies that have cast specified and with cast bigger then", actors_amount," actors"
 
 top_cast = []
 
 for title in movies:
     cast = movies[title]["cast"]
-    if len(cast) >= 6:
+    if len(cast) >= actors_amount:
         for actor_entry in cast:
             actor = actor_entry["actor"]
             if actor in top_actors:
@@ -566,7 +566,7 @@ for title in movies:
 for title in movies:
     cast = movies[title]["cast"]
     cast_sorted = sorted(cast, key=lambda k: k['rank'])
-    cast_sorted = cast_sorted[:6]
+    cast_sorted = cast_sorted[:actors_amount]
     # if len(cast_sorted) == 0: print title
     # print cast_sorted
     movies[title]["cast"] = cast_sorted
@@ -574,11 +574,11 @@ for title in movies:
 print movies["Six-String Samurai (1998)"]
 
 for title in movies.keys():
-    if len(movies[title]["cast"]) < 6:
+    if len(movies[title]["cast"]) < actors_amount:
         movies.pop(title, None)
         rejectes_movies.append([title, "on_cast_<_6_2"])
 
-print len(movies), "amount of movies after adding cast and with 6 actors listed in top list"
+print len(movies), "amount of movies after adding cast and with", actors_amount,"actors listed in top list"
 
 del top_cast, top_actors, movie_and_roles
 ######################################################
@@ -663,68 +663,72 @@ for title in movies.keys():
 
 print len(movies), "amount of movies after removing successful video games"
 
-f = open('files/datasetV_' + str(time.strftime("%Y%m%d-%H%M%S")),'w')
 
-f.write("title\t" +
-        "director\t" +
-        "rating\t" +
-        "votes\t" +
-        "year\t" +
-        "genre\t" +
-        "gross\t" +
-        "budget\t" +
-        "run-time\t" +
-        "actor1\t" +
-        "actor1_rank\t"
-        "actor1_sex\t"
-        "actor2\t" +
-        "actor2_rank\t" +
-        "actor2_sex\t" +
-        "actor3\t" +
-        "actor3_rank\t" +
-        "actor3_sex\t" +
-        "actor4\t" +
-        "actor4_rank\t" +
-        "actor4_sex\t" +
-        "actor5\t" +
-        "actor5_rank\t" +
-        "actor5_sex\t" +
-        "actor6\t" +
-        "actor6_rank\t" +
-        "actor6_sex\t" +
-        "plot" + "\n"
-        )
-for title in movies:
-    entry = movies[title]
-    f.write(title +"\t" +
-            str(entry["director"])  + "\t" +
-            str(entry["rating"])     + "\t" +
-            str(entry["votes"])      + "\t" +
-            str(entry["year"])       + "\t" +
-            str(entry["genre"])      + "\t" +
-            str(entry["gross"])      + "\t" +
-            str(entry["budget"])     + "\t" +
-            str(entry["run-time"])   + "\t" +
-            str(entry["cast"][0]["actor"])   + "\t" +
-            str(entry["cast"][0]["rank"]) + "\t" +
-            str(entry["cast"][0]["sex"]) + "\t" +
-            str(entry["cast"][1]["actor"])   + "\t" +
-            str(entry["cast"][1]["rank"]) + "\t" +
-            str(entry["cast"][1]["sex"]) + "\t" +
-            str(entry["cast"][2]["actor"])   + "\t" +
-            str(entry["cast"][2]["rank"]) + "\t" +
-            str(entry["cast"][2]["sex"]) + "\t" +
-            str(entry["cast"][3]["actor"]) + "\t" +
-            str(entry["cast"][3]["rank"]) + "\t" +
-            str(entry["cast"][3]["sex"]) + "\t" +
-            str(entry["cast"][4]["actor"]) + "\t" +
-            str(entry["cast"][4]["rank"]) + "\t" +
-            str(entry["cast"][4]["sex"]) + "\t" +
-            str(entry["cast"][5]["actor"]) + "\t" +
-            str(entry["cast"][5]["rank"]) + "\t" +
-            str(entry["cast"][5]["sex"]) + "\t" +
-            str(entry["plot"]) + "\n")
-f.close()
+fsl.save_to_file(movies,actors_amount)
+
+#
+# f = open('files/datasetV_' + str(time.strftime("%Y%m%d-%H%M%S")),'w')
+#
+# f.write("title\t" +
+#         "director\t" +
+#         "rating\t" +
+#         "votes\t" +
+#         "year\t" +
+#         "genre\t" +
+#         "gross\t" +
+#         "budget\t" +
+#         "run-time\t" +
+#         "actor1\t" +
+#         "actor1_rank\t"
+#         "actor1_sex\t"
+#         "actor2\t" +
+#         "actor2_rank\t" +
+#         "actor2_sex\t" +
+#         "actor3\t" +
+#         "actor3_rank\t" +
+#         "actor3_sex\t" +
+#         "actor4\t" +
+#         "actor4_rank\t" +
+#         "actor4_sex\t" +
+#         "actor5\t" +
+#         "actor5_rank\t" +
+#         "actor5_sex\t" +
+#         "actor6\t" +
+#         "actor6_rank\t" +
+#         "actor6_sex\t" +
+#         "plot" + "\n"
+#         )
+# for title in movies:
+#     entry = movies[title]
+#     f.write(title +"\t" +
+#             str(entry["director"])  + "\t" +
+#             str(entry["rating"])     + "\t" +
+#             str(entry["votes"])      + "\t" +
+#             str(entry["year"])       + "\t" +
+#             str(entry["genre"])      + "\t" +
+#             str(entry["gross"])      + "\t" +
+#             str(entry["budget"])     + "\t" +
+#             str(entry["run-time"])   + "\t" +
+#             str(entry["cast"][0]["actor"])   + "\t" +
+#             str(entry["cast"][0]["rank"]) + "\t" +
+#             str(entry["cast"][0]["sex"]) + "\t" +
+#             str(entry["cast"][1]["actor"])   + "\t" +
+#             str(entry["cast"][1]["rank"]) + "\t" +
+#             str(entry["cast"][1]["sex"]) + "\t" +
+#             str(entry["cast"][2]["actor"])   + "\t" +
+#             str(entry["cast"][2]["rank"]) + "\t" +
+#             str(entry["cast"][2]["sex"]) + "\t" +
+#             str(entry["cast"][3]["actor"]) + "\t" +
+#             str(entry["cast"][3]["rank"]) + "\t" +
+#             str(entry["cast"][3]["sex"]) + "\t" +
+#             str(entry["cast"][4]["actor"]) + "\t" +
+#             str(entry["cast"][4]["rank"]) + "\t" +
+#             str(entry["cast"][4]["sex"]) + "\t" +
+#             str(entry["cast"][5]["actor"]) + "\t" +
+#             str(entry["cast"][5]["rank"]) + "\t" +
+#             str(entry["cast"][5]["sex"]) + "\t" +
+#             str(entry["plot"]) + "\n")
+# f.close()
 #
 # print movies["Get Him to the Greek (2010)"]
 

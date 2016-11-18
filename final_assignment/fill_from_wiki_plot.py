@@ -1,42 +1,46 @@
-import csv, wikipedia, unicodedata, wptools
+import wikipedia, unicodedata
+import file_save_load as fsl
 import time
 
-movies = {}
 
-with open('files/datasetV_20161116-203716') as csvfile:
-    reader = csv.DictReader(csvfile, delimiter = "\t")
-    for entry in reader:
-        movies[
-            entry["title"]
-        ] = {
-        "director":     entry["director"],
-        "rating":       entry["rating"],
-        "votes":        entry["votes"],
-        "year":         entry["year"],
-        "genre":        entry["genre"],
-        "gross":        entry["gross"],
-        "budget":       entry["budget"],
-        "run-time":     entry["run-time"] ,
-        "actor1":       entry["actor1"],
-        "actor1_rank":  entry["actor1_rank"],
-        "actor1_sex":   entry["actor1_sex"],
-        "actor2":       entry["actor2"],
-        "actor2_rank":  entry["actor2_rank"],
-        "actor2_sex":   entry["actor2_sex"],
-        "actor3":       entry["actor3"],
-        "actor3_rank":  entry["actor3_rank"],
-        "actor3_sex":   entry["actor3_sex"],
-        "actor4":       entry["actor4"],
-        "actor4_rank":  entry["actor4_rank"],
-        "actor4_sex":   entry["actor4_sex"],
-        "actor5":       entry["actor5"],
-        "actor5_rank":  entry["actor5_rank"],
-        "actor5_sex":   entry["actor5_sex"],
-        "actor6":       entry["actor6"],
-        "actor6_rank":  entry["actor6_rank"],
-        "actor6_sex":   entry["actor6_sex"],
-        "plot":         entry["plot"]
-        }
+fileName = 'datasetV_20161118-094337'
+actors_amount = 3
+
+movies = fsl.read_from_file(fileName, 3)
+# with open('files/datasetV_20161116-203716') as csvfile:
+#     reader = csv.DictReader(csvfile, delimiter = "\t")
+#     for entry in reader:
+#         movies[
+#             entry["title"]
+#         ] = {
+#         "director":     entry["director"],
+#         "rating":       entry["rating"],
+#         "votes":        entry["votes"],
+#         "year":         entry["year"],
+#         "genre":        entry["genre"],
+#         "gross":        entry["gross"],
+#         "budget":       entry["budget"],
+#         "run-time":     entry["run-time"] ,
+#         "actor1":       entry["actor1"],
+#         "actor1_rank":  entry["actor1_rank"],
+#         "actor1_sex":   entry["actor1_sex"],
+#         "actor2":       entry["actor2"],
+#         "actor2_rank":  entry["actor2_rank"],
+#         "actor2_sex":   entry["actor2_sex"],
+#         "actor3":       entry["actor3"],
+#         "actor3_rank":  entry["actor3_rank"],
+#         "actor3_sex":   entry["actor3_sex"],
+#         "actor4":       entry["actor4"],
+#         "actor4_rank":  entry["actor4_rank"],
+#         "actor4_sex":   entry["actor4_sex"],
+#         "actor5":       entry["actor5"],
+#         "actor5_rank":  entry["actor5_rank"],
+#         "actor5_sex":   entry["actor5_sex"],
+#         "actor6":       entry["actor6"],
+#         "actor6_rank":  entry["actor6_rank"],
+#         "actor6_sex":   entry["actor6_sex"],
+#         "plot":         entry["plot"]
+#         }
 # print movies["Get Him to the Greek (2010)"]
 
 
@@ -59,7 +63,7 @@ for title in movies:
 print "movies with no plot:" , len(movies_with_no_plot)
 counter = 0
 # TODO Remove limits
-f = open('files/_additional_plot_from_wiki','a',0)
+# f = open('files/_additional_plot_from_wiki','a',0)
 
 for title in movies_with_no_plot:
 
@@ -115,8 +119,15 @@ for title in movies_with_no_plot:
 
         if go_flag:
             section_results = [unicodedata.normalize('NFKD', x).encode('ascii','ignore') for x in movie_page.sections]
-            f.write(str(full_title + "\t" + current_query + "\t" + str(search_results) + "\n"))
+            # f.write(str(full_title + "\t" + current_query + "\t" + str(search_results) + "\n"))
             print "sections for\t\t", current_query, section_results, "\n"
+            if "Plot" in section_results:
+                # print movie_page.section("Plot").replace("\n"," ")
+                # plot = movie_page.section("Plot")
+                try:
+                    wiki_plot_ok.append([movie_page.section("Plot").replace("\n"," "),full_title])
+                except:
+                    print "NoneTpye error"
 
     else:
         wiki_no_plot.append(["no_info_query", full_title])
@@ -124,17 +135,15 @@ for title in movies_with_no_plot:
     counter += 1
     print "Done with:",counter,"/",len(movies_with_no_plot)
 
-f.close()
 
-#
-# print "BUDGET:\tmovies with info:", len(wiki_budget_ok), "\tmovies no info:", len(wiki_no_budget), "\tall movies with no info:", len(movies_with_no_budget)
-#
-# f = open('files/_additional_budget_from_wiki_corrected','w')
-# f.write(str(time.strftime("%c")) + "\n")
-# f.write("BUDGET:\tmovies with info:" + str(len(wiki_budget_ok)) + "\tmovies no info:" + str(len(wiki_no_budget)) + "\tall movies with no info:" + str(len(movies_with_no_budget)) + "\n")
-#
-# for entry in wiki_budget_ok:
-#     f.write(str(entry)+"\n")
-#
-# f.close()
+print "PLOT:\tmovies with info:", len(wiki_plot_ok), "\tmovies no info:", len(wiki_no_plot), "\tall movies with no info:", len(movies_with_no_plot)
+
+f = open('files/_wiki_plot_for_' + fileName,'w')
+f.write(str(time.strftime("%c")) + "\n")
+f.write("PLOT:\tmovies with info:" + str(len(wiki_plot_ok)) + "\tmovies no info:" + str(len(wiki_no_plot)) + "\tall movies with no info:" + str(len(movies_with_no_plot)) + "\n")
+
+for entry in wiki_plot_ok:
+    f.write(str(entry)+"\n")
+
+f.close()
 
