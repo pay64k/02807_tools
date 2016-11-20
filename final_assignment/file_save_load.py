@@ -1,5 +1,5 @@
 import time, csv
-
+import unicodedata
 
 def save_to_file(movies, actors_amount):
 
