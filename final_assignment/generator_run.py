@@ -3,7 +3,7 @@ import datetime
 
 old_time = datetime.datetime.now()
 
-mr_job = gmr.map_movies_years(args=['IMDB_files_link/_filtered_data/big_movies_2'])
+mr_job = gmr.map_movies_years(args=['IMDB_files_link/_filtered_data/big_movies_3'])
 with mr_job.make_runner() as runner:
     runner.run()
 

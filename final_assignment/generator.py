@@ -2,15 +2,18 @@ import csv, helpers
 import time
 import imdb_parser
 import file_save_load as fsl
+import sys
+import datetime
 
 movies ={}
+movie_temp = []
 movies_amount = 0
 
 actors_amount = 3
 
 rejectes_movies = []
-
-with open("IMDB_files_link/_filtered_data/movies.filtered") as data_file:
+old_time = datetime.datetime.now()
+with open("IMDB_files_link/_filtered_data/big_movies_4") as data_file:
     reader = csv.reader(data_file, delimiter='\r')
     for line in reader:
         # line variable here is a list of strings, so we join it into one string
@@ -21,15 +24,21 @@ with open("IMDB_files_link/_filtered_data/movies.filtered") as data_file:
         # in the part_after_delimiter we delete all \t characters
         year = parted[2].replace("\t","")
         # check year validity
-        if year != "????" and int(year) >= 1986:
-            movies[title]={"year": year}
+        try:
+            if year != "????" and int(year) >= 1986:
+                # movies[title]={"year": year}
+                movie_temp.append([title,{"year": year}])
+        except:
+            pass
         # else:
         #     rejectes_movies.append([title,"on_year"])
         movies_amount += 1
 
 print movies_amount, "all movies"
 print len(movies), "movies amount after year filter"
-
+print datetime.datetime.now() - old_time
+print "done"
+sys.exit(0)
 ######################################################
 #               language filtering
 ######################################################
