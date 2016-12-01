@@ -12,17 +12,25 @@ log_file = open('log_file.txt', 'a', 0)
 
 
 def change_movie_data_3actors(title, new_list):
-    movies[title]["actor1"] = new_list[0]
-    movies[title]["actor2"] = new_list[1]
-    movies[title]["actor3"] = new_list[2]
+    try:
+        movies[title]["actor1"] = str(new_list[0])
+        movies[title]["actor2"] = str(new_list[1])
+        movies[title]["actor3"] = str(new_list[2])
+    except:
+        print "failed converting,", new_list[1]
+
+
+def timestamp():
+    return str(time.strftime("%Y-%m-%d\t%H:%M:%S"))
 
 
 def logger(*args):
     msg = ""
     for a in args:
         msg += a
-    log_file.write(msg +"\n")
-    print msg
+    with_timestamp = msg + "\t" + timestamp()
+    log_file.write(with_timestamp + "\n")
+    print with_timestamp
 
 
 def format_title(t):
@@ -33,7 +41,7 @@ def format_title(t):
     return t
 
 
-logger("------------LOG START ", str(time.strftime("%Y-%m-%d\t%H:%M:%S")), "------------")
+logger("------------LOG START ", timestamp(), "------------")
 
 movieID_list = ""
 movieID = ""
@@ -57,8 +65,9 @@ for title in movies:
             movie_url = base_url + str(movieID)
             response = requests.get(movie_url)
             movie_info = json.loads(response.text)
-            change_movie_data_3actors(title, [a for a in movie_info['Actors'].split(',')][:3])
-            logger("OK\t", title, "\tactors:\t",movie_info['Actors'])
+            actors_converted = [a.encode("latin-1") for a in movie_info['Actors'].split(',')][:3]
+            change_movie_data_3actors(title, actors_converted)
+            logger("OK\t", title, "\tactors:\t",str(actors_converted),"\t")
         except:
             logger("ERROR 2:\t", title, "\twhile getting movieID:\t", movieID, "\tURL:", movie_url, "\tresponse:\t", str(response))
             failed_movies.append(title)
@@ -67,7 +76,7 @@ for title in movies:
     movieID = ""
     movie_url = ""
     response = ""
-    time.sleep(randint(15, 30))
+    time.sleep(randint(30, 80))
 
 
 logger("----FAILED MOVIES----")
