@@ -4,8 +4,8 @@ import unicodedata
 
 def find_all():
     names = []
-    for num in range(0,200):
-        file = open("IMDB_files_link/imdb_scrap_more_raw/"+str(num))
+    for num in range(0,399):
+        file = open("IMDB_files_link/imdb_scrap_more_raw_20k/"+str(num))
         soup = BeautifulSoup(file, 'html.parser')
         for table in soup.find_all('table'):
             table_name = str(table.get('class')[0])
@@ -19,9 +19,9 @@ def find_all():
         all_names_ascii.append(unicodedata.normalize('NFKD', name).encode('ascii', 'ignore'))
     return all_names_ascii
 
-# f = open('IMDB_files_link/actors_scrapped','w')
-# names = find_all()
-# for name in names:
-#     f.write(name + "\n")
-#
-# f.close()
+f = open('IMDB_files_link/actors_scrapped_20k','w')
+names = find_all()
+for name in names:
+    f.write(name + "\n")
+
+f.close()

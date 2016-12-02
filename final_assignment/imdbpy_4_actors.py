@@ -8,15 +8,16 @@ ia = IMDb()
 
 base_url = "http://www.omdbapi.com/?i=tt"
 
-movies = fsl.read_from_file("imdb_dataset_v6.0.2_3_actors_complete.tsv", 3)
-log_file = open('log_file.txt', 'a', 0)
+movies = fsl.read_from_file("imdb_dataset_v7.2_6_actors_complete.tsv", 6)
+log_file = open('log_file_4_actors.txt', 'a', 0)
 
 
-def change_movie_data_3actors(title, new_list):
+def change_movie_data_4actors(title, new_list):
     try:
         movies[title]["actor1"] = str(new_list[0])
         movies[title]["actor2"] = str(new_list[1])
         movies[title]["actor3"] = str(new_list[2])
+        movies[title]["actor4"] = str(new_list[3])
     except:
         print "failed converting,", new_list[1]
 
@@ -68,8 +69,8 @@ for title in movies:
             response = requests.get(movie_url)
             movie_info = json.loads(response.text)
             actors_converted = [a.encode("latin-1") for a in movie_info['Actors'].split(',')]
-            if len(actors_converted) >= 3:
-                change_movie_data_3actors(title, actors_converted[:3])
+            if len(actors_converted) >= 4:
+                change_movie_data_4actors(title, actors_converted[:4])
                 logger("OK\t", title, "\tactors:\t",str(actors_converted),"\t", c, "/", len(movies))
             else:
                 logger("E2\t", title, "\tactors:\t",str(actors_converted),"\t", c, "/", len(movies))
@@ -90,4 +91,4 @@ logger("----FAILED MOVIES----")
 for title in failed_movies:
     logger(title)
 
-fsl.save_to_dataset(movies, 3)
+fsl.save_to_dataset(movies, 6)
