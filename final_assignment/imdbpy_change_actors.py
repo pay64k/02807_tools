@@ -57,63 +57,23 @@ for title in movies:
 
     updated_cast = updated_cast[:3]
 
-    movies[title]
+    movies[title]["actor1"] = updated_cast[0]
+    movies[title]["actor1_rank"] = top20k[updated_cast[0]]["rank"]
 
-    # if len(updated_cast) < 3:
-    #     print title
-    #     print "new", new_cast
-    #     print "old", old_cast
-    #     print "tmp", temp_cast
-    #     print "upd", updated_cast
-    #     print
+    movies[title]["actor2"] = updated_cast[1]
+    movies[title]["actor2_rank"] = top20k[updated_cast[1]]["rank"]
 
-    # for new_actor in new_cast:
-    #     if new_actor in old_cast:
-    #         if new_actor in top20k:
-    #             updated_cast.append([new_actor, top20k[new_actor]["rank"]])
-    #         else:
-    #             updated_cast.append()
+    movies[title]["actor3"] = updated_cast[2]
+    movies[title]["actor3_rank"] = top20k[updated_cast[2]]["rank"]
 
-    # print "new", new_cast
-    # print "old", old_cast
-    # print "tmp", temp_cast
-    # print "upd", updated_cast
-    # print
+# print movies["Star Wars: Episode VII - The Force Awakens (2015)"]
 
+# fsl.save_to_dataset(movies,3)
+    if title == "Star Wars: Episode VII - The Force Awakens (2015)":
+        print title
+        print "new", new_cast
+        print "old", old_cast
+        print "tmp", temp_cast
+        print "upd", updated_cast
+        print
 
-    # if actor1 in top20k:
-    #     movies[title]["actor1_rank"] = top20k[actor1]["rank"]
-    # else:
-    #     movies[title]["actor1_rank"] = "no_info"
-    #
-    # if actor2 in top20k:
-    #     movies[title]["actor2_rank"] = top20k[actor2]["rank"]
-    # else:
-    #     movies[title]["actor2_rank"] = "no_info"
-    #
-    # if actor3 in top20k:
-    #     movies[title]["actor3_rank"] = top20k[actor3]["rank"]
-    # else:
-    #     movies[title]["actor3_rank"] = "no_info"
-
-# for title in movies:
-#     if movies[title]["actor1_rank"] == "no_info":
-#         movies[title]["actor1"] = original_dataset[title]["actor1"]
-#         movies[title]["actor1_rank"] = original_dataset[title]["actor1_rank"]
-#
-#     if movies[title]["actor2_rank"] == "no_info":
-#         movies[title]["actor2"] = original_dataset[title]["actor2"]
-#         movies[title]["actor2_rank"] = original_dataset[title]["actor2_rank"]
-#
-#     if movies[title]["actor3_rank"] == "no_info":
-#         movies[title]["actor3"] = original_dataset[title]["actor3"]
-#         movies[title]["actor3_rank"] = original_dataset[title]["actor3_rank"]
-#
-# for title in movies:
-#     cast = set()
-#     full_cast = [movies[title]["actor1"], movies[title]["actor2"], movies[title]["actor3"]]
-#     cast.add(movies[title]["actor1"])
-#     cast.add(movies[title]["actor2"])
-#     cast.add(movies[title]["actor3"])
-#     if len(cast) != 3:
-#         print title, cast, full_cast
