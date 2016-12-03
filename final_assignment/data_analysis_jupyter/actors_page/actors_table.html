@@ -1,0 +1,34 @@
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.3.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+
+<!-- source for the table: http://js-tutorial.com/columns-search-sort-and-paginate-your-json-data-815 -->
+<script src="js/jquery.columns.min.js"></script>
+<link rel="stylesheet" href="css/clean.css">
+
+<div id="columns"></div>
+
+<script type="text/javascript">
+
+var actors_main;
+
+$.getJSON("actors.json", function(json) {
+    actors_main = json;
+	var arr = $.map(actors_main, function(el) { return el });
+	$('#columns').columns({
+	  data:arr,
+	  schema: [
+                {"header":"Actor Name", "key":"Name"},
+                {"header":"Rank", "key":"Rank"},
+                {"header":"Choose as", "key":"Choose as"},
+                {"header":"Amount of movies made", "key":"Movies Count"}
+            ],
+      sortableFields: ['Name', 'Rank', 'Movies Count'],
+      searchableFields: ['Name', 'Rank'],
+      showRows: [10, 25, 50],
+      size: 10,
+      sortBy: 'Rank'
+	});
+});
+
+</script>
